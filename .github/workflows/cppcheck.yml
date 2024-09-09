@@ -1,0 +1,29 @@
+---
+
+name: CppCheck Lint
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: ["main"]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: CppCheck Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install cppcheck
+          cppcheck --version
+
+      - name: Lint
+        run: make test/static

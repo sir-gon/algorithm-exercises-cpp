@@ -1,0 +1,13 @@
+build/
+result*
+.vscode/*
+
+# vcpkg
+vcpkg_installed
+
+# gcovr Coverage collector
+*.gcov
+coverage
+
+# cppcheck output
+cppcheck-report.txt

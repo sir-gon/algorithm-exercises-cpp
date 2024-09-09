@@ -1,0 +1,51 @@
+---
+services:
+  algorithm-exercises-cpp-test:
+    image: algorithm-exercises-cpp:test
+    build:
+      context: .
+      target: testing
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info} ## (1) ## info | debug
+      BRUTEFORCE: ${BRUTEFORCE:-false} ## (1) ## true | false
+    volumes:
+      - ./coverage:/app/coverage
+    profiles: ["testing"]
+
+  algorithm-exercises-cpp-lint:
+    image: algorithm-exercises-cpp:lint
+    build:
+      context: .
+      target: lint
+    # environment:
+    #   LOG_LEVEL: ${LOG_LEVEL:-info} ## (1) ## info | debug
+    #   BRUTEFORCE: ${BRUTEFORCE:-false} ## (1) ## true | false
+    volumes:
+      - ./:/app
+    profiles: ["lint"]
+
+  algorithm-exercises-cpp-dev:
+    image: algorithm-exercises-cpp:dev
+    build:
+      context: .
+      target: development
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info} ## (1) ## info | debug
+      BRUTEFORCE: ${BRUTEFORCE:-false} ## (1) ## true | false
+    volumes:
+      - ./:/app
+    profiles: ["development"]
+
+  algorithm-exercises-cpp:
+    image: algorithm-exercises-cpp:latest
+    build:
+      context: .
+      target: production
+    # volumes:
+    #   - ./:/app
+    profiles: ["production"]
+
+## REFERENCES:
+## (1) Passing Environment variable with fallback value:
+##    https://stackoverflow.com/a/70772707/6366150
+##
