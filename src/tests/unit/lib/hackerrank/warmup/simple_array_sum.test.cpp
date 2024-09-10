@@ -1,12 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <exercises/hackerrank/warmup/simple_array_sum.hpp>
-#include <iostream>
 #include <vector>
-
 #include <filesystem>
 #include <fstream>
 #include <nlohmann/json.hpp>
+
 using json = nlohmann::json;
 
 TEST_CASE("simpleArraySum", "[warmup]")
