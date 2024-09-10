@@ -1,4 +1,4 @@
-FROM ubuntu:24.10 AS init
+FROM ubuntu:oracular-20240617 AS init
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
