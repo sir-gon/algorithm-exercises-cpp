@@ -17,7 +17,7 @@ vector<string> split(const string &);
 
 namespace hackerrank::warmup {
 
-    int simpleArraySum(std::vector<int> ar) {
+    int simpleArraySum(const std::vector<int>& ar) {
         int accum = 0;
 
         for(const int i : ar)  {
