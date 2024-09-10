@@ -68,11 +68,15 @@ lint/yaml:
 lint: lint/markdown lint/yaml test/styling test/static
 
 test/static:
-	cppcheck --enable=all \
-		--inconclusive \
-		--library=posix \
+	cppcheck \
+		--enable=all \
 		--std=c++17 \
+		--library=posix \
+		--inconclusive \
+		--inline-suppr \
+		--error-exitcode=13 \
 		--suppress=missingIncludeSystem \
+		--showtime=summary \
 		src/
 
 test/styling:

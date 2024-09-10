@@ -2,6 +2,7 @@
 
 #include <exercises/foo.hpp>
 
+// cppcheck-suppress unusedFunction
 TEST_CASE("adding numbers work", "[foo]")
 {
     CHECK(foo::add(0, 0) == 0);
