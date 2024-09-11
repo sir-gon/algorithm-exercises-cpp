@@ -11,7 +11,7 @@ using json = nlohmann::json;
 TEST_CASE("simpleArraySum", "[warmup]")
 {
     std::filesystem::path cwd = std::filesystem::current_path();
-    std::string path = cwd.string() + "/unit/lib/hackerrank/warmup/simple_array_sum.testcase.json";
+    std::string path = cwd.string() + "/unit/lib/hackerrank/warmup/simple_array_sum.testcases.json";
 
     INFO("simpleArraySum JSON test cases FILE: " << path);
 
