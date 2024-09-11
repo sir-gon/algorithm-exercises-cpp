@@ -12,6 +12,7 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   build:
+    name: C++ CMake CI Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
