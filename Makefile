@@ -56,8 +56,8 @@ build: dependencies
 	cmake --build build --verbose
 
 dependencies:
-	vcpkg integrate install
-	vcpkg install
+	vcpkg --x-wait-for-lock integrate install
+	vcpkg --x-wait-for-lock install
 
 lint/markdown:
 	markdownlint '**/*.md' && echo '✔  Your code looks good.'
