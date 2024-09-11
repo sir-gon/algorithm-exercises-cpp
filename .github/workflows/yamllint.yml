@@ -12,6 +12,7 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   lint:
+    name: YAML lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
