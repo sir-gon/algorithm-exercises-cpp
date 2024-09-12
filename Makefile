@@ -24,7 +24,7 @@ BUILDKIT_PROGRESS=plain
 DOCKER_COMPOSE=docker compose
 
 # TOOLS
-COVERAGE_TOOL=gcovr -e "src/tests/*" -e "build/*"
+COVERAGE_TOOL=gcovr -e "src/tests/*" -e "build/*" --exclude-throw-branches --exclude-unreachable-branches --exclude-noncode-lines --print-summary
 
 .MAIN: test
 .PHONY: all clean dependencies help list test outdated
