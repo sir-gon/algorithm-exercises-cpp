@@ -4,7 +4,6 @@
  * @link Problem definition [[docs/hackerrank/warmup/compare_triplets.md]]
  */
 
-#include <iostream>
 #include <vector>
 
 namespace hackerrank::warmup {

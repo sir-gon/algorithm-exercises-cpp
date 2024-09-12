@@ -4,7 +4,6 @@
  * @link Problem definition [[docs/hackerrank/warmup/birthday_cake_candles.md]]
  */
 
-#include <numeric>
 #include <vector>
 
 namespace hackerrank::warmup {
