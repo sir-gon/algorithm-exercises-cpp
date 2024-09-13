@@ -26,6 +26,10 @@ DOCKER_COMPOSE=docker compose
 # TOOLS
 COVERAGE_TOOL=gcovr -e "src/tests/*" -e "build/*" --exclude-throw-branches --exclude-unreachable-branches --exclude-noncode-lines --print-summary
 
+# C++ specific
+SRC_DIR = src
+FILES := $(shell find $(SRC_DIR) -name '*.cpp' -o -name '*.h' -o -name '*.hpp' -o -name '*.inl')
+
 .MAIN: test
 .PHONY: all clean dependencies help list test outdated
 .EXPORT_ALL_VARIABLES: # (2)
@@ -80,8 +84,10 @@ test/static:
 		src/
 
 test/styling:
+	clang-format --dry-run --Werror $(FILES)
 
-format: dependencies
+format:
+	clang-format -i --verbose $(FILES)
 
 test: env dependencies
 	cd build && make test

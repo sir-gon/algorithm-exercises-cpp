@@ -92,6 +92,7 @@ It is assumed that the following tools have already been installed:
 - [**CMake**](https://cmake.org/)
 - [**vcpkg**](https://vcpkg.io/)
 - [**CppCheck**](https://cppcheck.sourceforge.io/)
+- [**(LLVM) clang-format**](https://clang.llvm.org/docs/ClangFormat.html)
 
 Using a  runtime in your SO. You must install dependencies:
 

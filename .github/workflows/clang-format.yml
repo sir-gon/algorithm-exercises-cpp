@@ -1,0 +1,33 @@
+---
+
+name: clang-format style check
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: ["main"]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: clang-format style check
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+
+      - name: Install dependencies
+        # yamllint disable rule:line-length
+        run: |
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main"
+          sudo apt-get -y update
+          sudo apt-get -y install --no-install-recommends --no-install-suggests clang-format
+          clang-format --version
+        # yamllint enable rule:line-length
+
+      - name: Style Check
+        run: make test/styling
