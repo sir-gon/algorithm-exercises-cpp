@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS init
+FROM ubuntu:24.10 AS init
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
@@ -9,17 +9,12 @@ RUN apt-get -y update && \
 
 FROM init AS builder
 
-# build tools
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
 
+# build tools
 RUN apt-get update && \
-  apt-get -y install --no-install-recommends --no-install-suggests gnupg software-properties-common && \
-  rm -rf /var/lib/apt/lists/*
-ADD https://apt.llvm.org/llvm-snapshot.gpg.key llvm-snapshot.gpg.key
-RUN apt-key add llvm-snapshot.gpg.key && \
-  apt-add-repository "deb http://apt.llvm.org/noble/ llvm-toolchain-noble main" && \
-  apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests build-essential cmake g++ make pkg-config && \
-  apt-get -y install --no-install-recommends --no-install-suggests clang-format && \
   rm -rf /var/lib/apt/lists/*
 
 # vcpkg Package Manager
@@ -63,13 +58,25 @@ FROM builder AS development
 
 FROM builder AS lint
 
-RUN apt-get -y update && \
-  apt-get -y install --no-install-recommends --no-install-suggests dialog apt-utils && \
-  apt-get -y install --no-install-recommends --no-install-suggests yamllint && \
-  apt-get -y install --no-install-recommends --no-install-suggests nodejs npm && \
+RUN apt-get update && \
+  apt-get -y install --no-install-recommends --no-install-suggests gnupg software-properties-common && \
+  rm -rf /var/lib/apt/lists/*
+ADD https://apt.llvm.org/llvm-snapshot.gpg.key llvm-snapshot.gpg.key
+RUN apt-key add llvm-snapshot.gpg.key && \
+  apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main" && \
+  apt-get -y update && \
+  apt-get -y install --no-install-recommends --no-install-suggests clang-format && \
+  rm -rf /var/lib/apt/lists/*
+
+ADD https://deb.nodesource.com/setup_22.x nodesource_setup.sh
+RUN bash nodesource_setup.sh && \
+  apt-get -y install --no-install-recommends --no-install-suggests nodejs && \
+  npm install -g --ignore-scripts markdownlint-cli && \
+  apt-get -y install --no-install-recommends --no-install-suggests python3 python3-pip && \
+  rm /usr/lib/python3.*/EXTERNALLY-MANAGED && \
+  pip install --no-cache-dir yamllint && \
   apt-get -y install --no-install-recommends --no-install-suggests cppcheck && \
-  rm -rf /var/lib/apt/lists/* && \
-  npm install -g --ignore-scripts markdownlint-cli
+  rm -rf /var/lib/apt/lists/*
 
 # Code source
 COPY ./src ${WORKDIR}/src
@@ -98,7 +105,7 @@ COPY --from=builder ${WORKDIR}/build ${WORKDIR}/
 
 CMD ["make", "test"]
 
-FROM ubuntu:24.04 AS production
+FROM ubuntu:24.10 AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
