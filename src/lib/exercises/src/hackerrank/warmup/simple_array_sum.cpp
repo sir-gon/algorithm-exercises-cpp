@@ -9,9 +9,9 @@
 
 namespace hackerrank::warmup {
 
-    int simpleArraySum(const std::vector<int>& ar) {
-        const int INIT_VALUE = 0;
-        return std::accumulate(ar.begin(), ar.end(), INIT_VALUE);
-    }
-
+int simpleArraySum(const std::vector<int> &ar) {
+  const int INIT_VALUE = 0;
+  return std::accumulate(ar.begin(), ar.end(), INIT_VALUE);
 }
+
+} // namespace hackerrank::warmup

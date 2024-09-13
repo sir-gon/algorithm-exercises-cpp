@@ -9,9 +9,9 @@
 
 namespace hackerrank::warmup {
 
-    long aVeryBigSum(const std::vector<long>& ar) {
-        const long INIT_VALUE = 0L;
-        return std::accumulate(ar.begin(), ar.end(), INIT_VALUE);
-    }
-
+long aVeryBigSum(const std::vector<long> &ar) {
+  const long INIT_VALUE = 0L;
+  return std::accumulate(ar.begin(), ar.end(), INIT_VALUE);
 }
+
+} // namespace hackerrank::warmup

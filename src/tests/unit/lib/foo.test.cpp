@@ -2,10 +2,9 @@
 
 #include <exercises/foo.hpp>
 
-TEST_CASE("adding numbers work", "[foo]")
-{
-    CHECK(foo::add(0, 0) == 0);
-    CHECK(foo::add(0, 7) == 7);
-    CHECK(foo::add(7, 0) == 7);
-    CHECK(foo::add(7, 7) == 14);
+TEST_CASE("adding numbers work", "[foo]") {
+  CHECK(foo::add(0, 0) == 0);
+  CHECK(foo::add(0, 7) == 7);
+  CHECK(foo::add(7, 0) == 7);
+  CHECK(foo::add(7, 7) == 14);
 }

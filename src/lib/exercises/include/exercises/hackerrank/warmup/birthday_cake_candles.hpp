@@ -3,5 +3,5 @@
 #pragma once
 
 namespace hackerrank::warmup {
-    int birthdayCakeCandles(const std::vector<int>& candles);
+int birthdayCakeCandles(const std::vector<int> &candles);
 }

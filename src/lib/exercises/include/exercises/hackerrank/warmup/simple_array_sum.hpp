@@ -3,5 +3,5 @@
 #pragma once
 
 namespace hackerrank::warmup {
-    int simpleArraySum(const std::vector<int>& ar);
+int simpleArraySum(const std::vector<int> &ar);
 }
