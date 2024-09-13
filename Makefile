@@ -51,8 +51,9 @@ clean:
 	sh -c "rm -fr -v ./build/*" || true
 	sh -c "rm -fr -v ./build/.*" || true
 	touch ./build/.gitkeep
-	sh -c "rm -fr -v ./coverage/.*" || true
+	sh -c "rm -fr -v ./coverage/*" || true
 	touch ./coverage/.gitkeep
+	sh -c "rm -fr -v ./vcpkg_installed" || true
 
 build: dependencies
 	cmake --preset debug -B build && \
