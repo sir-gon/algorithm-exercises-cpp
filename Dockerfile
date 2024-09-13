@@ -1,31 +1,39 @@
-FROM ubuntu:24.10 AS init
+FROM ubuntu:24.04 AS init
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
 
 RUN apt-get -y update && \
-    apt-get -y install --no-install-recommends --no-install-suggests make && \
-    rm -rf /var/lib/apt/lists/*
+  apt-get -y install --no-install-recommends --no-install-suggests make && \
+  rm -rf /var/lib/apt/lists/*
 
 FROM init AS builder
 
 # build tools
-RUN apt-get -y update && \
-    apt-get -y install --no-install-recommends --no-install-suggests build-essential cmake g++ make pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && \
+  apt-get -y install --no-install-recommends --no-install-suggests gnupg software-properties-common && \
+  rm -rf /var/lib/apt/lists/*
+ADD https://apt.llvm.org/llvm-snapshot.gpg.key llvm-snapshot.gpg.key
+RUN apt-key add llvm-snapshot.gpg.key && \
+  apt-add-repository "deb http://apt.llvm.org/noble/ llvm-toolchain-noble main" && \
+  apt-get -y update && \
+  apt-get -y install --no-install-recommends --no-install-suggests build-essential cmake g++ make pkg-config && \
+  apt-get -y install --no-install-recommends --no-install-suggests clang-format && \
+  rm -rf /var/lib/apt/lists/*
 
 # vcpkg Package Manager
 ADD https://github.com/microsoft/vcpkg/archive/refs/tags/2024.08.23.tar.gz vcpkg.tar.gz
 RUN apt-get -y update && \
-    apt-get -y install --no-install-recommends --no-install-suggests \
-        ca-certificates curl git unzip zip && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir /opt/vcpkg && \
-    tar xf vcpkg.tar.gz --strip-components=1 -C /opt/vcpkg && \
-    /opt/vcpkg/bootstrap-vcpkg.sh && \
-    ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && \
-    rm -rf vcpkg.tar.gz && \
-    vcpkg version
+  apt-get -y install --no-install-recommends --no-install-suggests \
+  ca-certificates curl git unzip zip && \
+  rm -rf /var/lib/apt/lists/* && \
+  mkdir /opt/vcpkg && \
+  tar xf vcpkg.tar.gz --strip-components=1 -C /opt/vcpkg && \
+  /opt/vcpkg/bootstrap-vcpkg.sh && \
+  ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && \
+  rm -rf vcpkg.tar.gz && \
+  vcpkg version
 ENV VCPKG_ROOT=/opt/vcpkg
 
 # sources
@@ -37,15 +45,15 @@ COPY ./Makefile ${WORKDIR}/
 
 # dependencies
 RUN vcpkg --x-wait-for-lock integrate install && \
-    vcpkg --x-wait-for-lock install
+  vcpkg --x-wait-for-lock install
 
 LABEL vcpkg=enabled
 
 # build
 RUN ls -alhR && \
-    mkdir build && \
-    make build && \
-    ls -alhR
+  mkdir build && \
+  make build && \
+  ls -alhR
 
 CMD ["make", "build"]
 
@@ -53,15 +61,15 @@ FROM builder AS development
 
 # CMD []
 
-FROM init AS lint
+FROM builder AS lint
 
 RUN apt-get -y update && \
-    apt-get -y install --no-install-recommends --no-install-suggests dialog apt-utils && \
-    apt-get -y install --no-install-recommends --no-install-suggests yamllint && \
-    apt-get -y install --no-install-recommends --no-install-suggests nodejs npm && \
-    apt-get -y install --no-install-recommends --no-install-suggests cppcheck && \
-    rm -rf /var/lib/apt/lists/* && \
-    npm install -g --ignore-scripts markdownlint-cli
+  apt-get -y install --no-install-recommends --no-install-suggests dialog apt-utils && \
+  apt-get -y install --no-install-recommends --no-install-suggests yamllint && \
+  apt-get -y install --no-install-recommends --no-install-suggests nodejs npm && \
+  apt-get -y install --no-install-recommends --no-install-suggests cppcheck && \
+  rm -rf /var/lib/apt/lists/* && \
+  npm install -g --ignore-scripts markdownlint-cli
 
 # Code source
 COPY ./src ${WORKDIR}/src
@@ -83,8 +91,8 @@ CMD ["make", "lint"]
 FROM development AS testing
 
 RUN apt-get -y update && \
-    apt-get -y install --no-install-recommends --no-install-suggests gcovr && \
-    rm -rf /var/lib/apt/lists/*
+  apt-get -y install --no-install-recommends --no-install-suggests gcovr && \
+  rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder ${WORKDIR}/build ${WORKDIR}/
 
