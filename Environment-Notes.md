@@ -42,6 +42,7 @@ code --install-extension xaver.clang-format
 code --install-extension ryanluker.vscode-coverage-gutters
 code --install-extension NathanJ.cpp-tools-plugin
 code --install-extension ms-vscode.makefile-tools
+code --install-extension xaver.clang-format
 ```
 
 General purpose
