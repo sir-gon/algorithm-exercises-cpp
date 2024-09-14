@@ -8,15 +8,15 @@
 #include <string>
 #include <vector>
 
-#define BUFFER_MAX_SIZE 100
+const int BUFFER_MAX_SIZE = 10;
 
 std::string format_result(double number) {
-  char buffer[BUFFER_MAX_SIZE];
+  std::string str;
+  str.reserve(BUFFER_MAX_SIZE);
+  char *buffer = str.data();
 
   snprintf(buffer, BUFFER_MAX_SIZE, "%0.6lf", number);
-  std::string formatted = buffer;
-
-  return formatted;
+  return buffer;
 }
 
 namespace hackerrank::warmup {
