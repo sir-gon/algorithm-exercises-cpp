@@ -98,7 +98,7 @@ CMD ["make", "lint"]
 FROM development AS testing
 
 RUN apt-get -y update && \
-  apt-get -y install --no-install-recommends --no-install-suggests gcovr && \
+  apt-get -y install --no-install-recommends --no-install-suggests lcov && \
   rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder ${WORKDIR}/build ${WORKDIR}/

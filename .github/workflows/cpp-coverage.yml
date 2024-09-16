@@ -21,14 +21,14 @@ jobs:
 
       - name: Install Tools
         run: |
-          pip install gcovr
+          sudo apt-get install lcov
 
       - name: Check Tools
         run: |
           make --version
           cmake --version
           vcpkg --version
-          gcovr --version
+          lcov --version
 
       - name: Install dependencies
         run: |
@@ -54,6 +54,6 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           directory: ./coverage
-          files: coverage.lcov
+          files: coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }} # required
           verbose: true # optional (default = false)
