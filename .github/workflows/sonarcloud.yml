@@ -35,8 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          vcpkg integrate install
-          vcpkg install
+          make dependencies
 
       - name: Install sonar-scanner and build-wrapper
         uses: sonarsource/sonarcloud-github-c-cpp@v3
