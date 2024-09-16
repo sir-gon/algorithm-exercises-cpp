@@ -62,11 +62,44 @@ genhtml_function_coverage = 1
 # Adjust test names if non-zero
 #geninfo_adjust_testname = 0
 
+# Location of the gcov tool
+#geninfo_gcov_tool = gcov
+
+# Adjust test names if non-zero
+#geninfo_adjust_testname = 0
+
 # Calculate a checksum for each line if non-zero
 geninfo_checksum = 0
 
 # Enable libtool compatibility mode if non-zero
 geninfo_compat_libtool = 0
+
+# Specify whether to capture coverage data for external source
+# files
+#geninfo_external = 1
+
+# Use gcov's --all-blocks option if non-zero
+#geninfo_gcov_all_blocks = 1
+
+# Specify compatiblity modes (same as --compat option
+# of geninfo)
+#geninfo_compat = libtool=on, hammer=auto, split_crc=auto
+
+# Adjust path to source files by removing or changing path
+# components that match the specified pattern (Perl regular
+# expression format)
+#geninfo_adjust_src_path = /tmp/build => /usr/src
+
+# Specify if geninfo should try to automatically determine
+# the base-directory when collecting coverage data.
+geninfo_auto_base = 1
+
+# Use gcov intermediate format? Valid values are 0, 1, auto
+geninfo_intermediate = auto
+
+# Specify whether to exclude exception branches from branch coverage.
+# Default is 0.
+geninfo_no_exception_branch = 1
 
 # Directory containing gcov kernel files
 lcov_gcov_dir = /proc/gcov
@@ -82,3 +115,31 @@ lcov_rmmod_tool = /sbin/rmmod
 
 # Location for temporary directories
 lcov_tmp_dir = /tmp
+
+# Show full paths during list operation if non-zero
+lcov_list_full_path = 1
+
+# Specify the maximum width for list output. This value is
+# ignored when lcov_list_full_path is non-zero.
+lcov_list_width = 80
+
+# Specify the maximum percentage of file names which may be
+# truncated when choosing a directory prefix in list output.
+# This value is ignored when lcov_list_full_path is non-zero.
+lcov_list_truncate_max = 20
+
+# Specify if function coverage data should be collected and
+# processed.
+lcov_function_coverage = 1
+
+# Specify if branch coverage data should be collected and
+# processed.
+lcov_branch_coverage = 1
+
+# Ask LCOV to return non-zero exit code if line coverage is
+# below specified threshold percentage.
+; lcov_fail_under_lines = 97.5
+
+# Specify JSON module to use, or choose best available if
+# set to auto
+lcov_json_module = auto
