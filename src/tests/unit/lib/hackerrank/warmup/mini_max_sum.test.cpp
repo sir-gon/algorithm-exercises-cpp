@@ -11,7 +11,8 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-TEST_CASE("miniMaxSum JSON Test Cases", "[warmup]") {
+TEST_CASE("miniMaxSum JSON Test Cases",
+          "[hackerrank] [jsontestcase] [warmup]") {
   std::filesystem::path cwd = std::filesystem::current_path();
   std::string path =
       cwd.string() + "/unit/lib/hackerrank/warmup/mini_max_sum.testcases.json";
@@ -30,7 +31,7 @@ TEST_CASE("miniMaxSum JSON Test Cases", "[warmup]") {
   }
 }
 
-TEST_CASE("miniMaxSum Edge Cases", "[warmup]") {
+TEST_CASE("miniMaxSum Edge Cases", "[hackerrank] [warmup]") {
   std::vector<int> empty;
   CHECK_THROWS_AS(hackerrank::warmup::miniMaxSumCalculate(empty),
                   std::invalid_argument);

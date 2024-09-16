@@ -8,7 +8,8 @@
 
 using json = nlohmann::json;
 
-TEST_CASE("simpleArraySum", "[warmup]") {
+TEST_CASE("simpleArraySum JSON Test Cases",
+          "[hackerrank] [jsontestcase] [warmup]") {
   std::filesystem::path cwd = std::filesystem::current_path();
   std::string path =
       cwd.string() +

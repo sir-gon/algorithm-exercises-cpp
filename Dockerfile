@@ -72,7 +72,7 @@ ADD https://deb.nodesource.com/setup_22.x nodesource_setup.sh
 RUN bash nodesource_setup.sh && \
   apt-get -y install --no-install-recommends --no-install-suggests nodejs && \
   npm install -g --ignore-scripts markdownlint-cli && \
-  apt-get -y install --no-install-recommends --no-install-suggests python3 python3-pip && \
+  apt-get -y install --no-install-recommends --no-install-suggests python3-minimal python3-pip && \
   rm /usr/lib/python3.*/EXTERNALLY-MANAGED && \
   pip install --no-cache-dir yamllint && \
   apt-get -y install --no-install-recommends --no-install-suggests cppcheck && \
@@ -98,7 +98,7 @@ CMD ["make", "lint"]
 FROM development AS testing
 
 RUN apt-get -y update && \
-  apt-get -y install --no-install-recommends --no-install-suggests gcovr && \
+  apt-get -y install --no-install-recommends --no-install-suggests lcov && \
   rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder ${WORKDIR}/build ${WORKDIR}/
