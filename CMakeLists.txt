@@ -12,6 +12,7 @@ include(CTest)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(VCPKG_MANIFEST_INSTALL OFF)
 
 SET(GCC_COVERAGE_COMPILE_FLAGS "-fsanitize=address -fprofile-arcs -ftest-coverage -g -O0")
 SET(GCC_COVERAGE_LINK_FLAGS "--coverage")
