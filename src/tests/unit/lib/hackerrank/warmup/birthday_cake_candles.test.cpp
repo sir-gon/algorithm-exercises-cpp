@@ -9,7 +9,8 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-TEST_CASE("birthdayCakeCandles JSON Test Cases", "[warmup]") {
+TEST_CASE("birthdayCakeCandles JSON Test Cases",
+          "[hackerrank] [jsontestcase] [warmup]") {
   std::filesystem::path cwd = std::filesystem::current_path();
   std::string path =
       cwd.string() +
