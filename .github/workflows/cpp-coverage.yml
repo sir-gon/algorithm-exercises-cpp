@@ -32,19 +32,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          vcpkg --x-wait-for-lock integrate install
-          vcpkg --x-wait-for-lock install
+          make dependencies
 
       # yamllint disable rule:line-length
       - name: Build
         run: |
           export VCPKG_ROOT=/usr/local/share/vcpkg
-          cmake --preset debug -B build
-          cmake --preset debug \
-            -DCMAKE_TOOLCHAIN_FILE=/usr/local/share/vcpkg/scripts/buildsystems/vcpkg.cmake \
-            -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
-            build
-          cmake --build build --verbose
+          make build
       # yamllint enable rule:line-length
 
       - name: Test / Coverage

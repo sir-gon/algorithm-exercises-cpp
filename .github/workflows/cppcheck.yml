@@ -19,11 +19,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
-      - name: Install dependencies
+      - name: Install tools
         run: |
           sudo apt-get update
           sudo apt-get install cppcheck
+
+      - name: Check Tools
+        run: |
+          make --version
+          cmake --version
+          vcpkg --version
           cppcheck --version
 
+      - name: Install dependencies
+        run: |
+          make dependencies
+
       - name: Lint
-        run: make test/static
+        run: |
+          export VCPKG_ROOT=/usr/local/share/vcpkg
+          make test/static
