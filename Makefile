@@ -55,9 +55,10 @@ clean:
 	touch ./coverage/.gitkeep
 	sh -c "rm -fr -v ./vcpkg_installed" || true
 
-build: dependencies
-	cmake --preset debug -B build && \
-	cmake --preset debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1 build && \
+prebuild: dependencies
+	cmake --preset debug -B build
+
+build: prebuild
 	cmake --build build --verbose
 
 dependencies:
@@ -72,17 +73,18 @@ lint/yaml:
 
 lint: lint/markdown lint/yaml test/styling test/static
 
-test/static:
+test/static: prebuild
 	cppcheck \
+		--project=build/compile_commands.json \
 		--enable=all \
+		--check-level=exhaustive \
 		--std=c++17 \
 		--library=posix \
 		--inconclusive \
 		--inline-suppr \
 		--error-exitcode=13 \
 		--suppress=missingIncludeSystem \
-		--showtime=summary \
-		src/
+		--showtime=summary
 
 test/styling:
 	clang-format --dry-run --Werror $(FILES)
