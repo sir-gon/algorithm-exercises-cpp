@@ -39,8 +39,7 @@ COPY ./CMakePresets.json ${WORKDIR}/CMakePresets.json
 COPY ./Makefile ${WORKDIR}/
 
 # dependencies
-RUN vcpkg --x-wait-for-lock integrate install && \
-  vcpkg --x-wait-for-lock install
+RUN make dependencies
 
 LABEL vcpkg=enabled
 
