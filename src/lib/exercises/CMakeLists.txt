@@ -7,6 +7,11 @@ target_include_directories(exercises
         $<INSTALL_INTERFACE:include>
 )
 
+target_compile_options(exercises
+        PUBLIC
+        -save-temps
+)
+
 install(TARGETS exercises
         EXPORT exercisesConfig
         ARCHIVE DESTINATION lib
