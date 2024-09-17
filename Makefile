@@ -92,7 +92,7 @@ test/styling:
 format:
 	clang-format -i --verbose $(FILES)
 
-test: env dependencies
+test: env dependencies build
 	cd build && make test
 
 coverage: test
