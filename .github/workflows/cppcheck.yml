@@ -21,8 +21,7 @@ jobs:
 
       - name: Install tools
         run: |
-          sudo apt-get update
-          sudo apt-get install cppcheck
+          sudo snap install cppcheck
 
       - name: Check Tools
         run: |
