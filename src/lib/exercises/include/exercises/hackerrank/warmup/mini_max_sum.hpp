@@ -5,5 +5,5 @@
 
 namespace hackerrank::warmup {
 std::string miniMaxSumCalculate(const std::vector<int> &arr);
-void miniMaxSum(const std::vector<int> &ar);
+void miniMaxSum(const std::vector<int> &arr);
 } // namespace hackerrank::warmup

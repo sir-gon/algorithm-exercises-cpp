@@ -26,8 +26,13 @@ jobs:
           sudo apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main"
           sudo apt-get -y update
           sudo apt-get -y install --no-install-recommends --no-install-suggests clang-format
+          # yamllint enable rule:line-length
+
+      - name: Check Tools
+        run: |
+          make --version
+          cmake --version
           clang-format --version
-        # yamllint enable rule:line-length
 
       - name: Style Check
         run: make test/styling
