@@ -11,7 +11,7 @@ on: # yamllint disable-line rule:truthy
 jobs:
   build:
     name: SonarCloud build and run sonar-scanner
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       # Directory where build-wrapper output will be placed
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
@@ -22,6 +22,7 @@ jobs:
           fetch-depth: 0
       - name: Install Tools
         run: |
+          sudo rm /usr/lib/python3.*/EXTERNALLY-MANAGED
           sudo apt-get install lcov
           pip install gcovr
 
