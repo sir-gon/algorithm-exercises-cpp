@@ -24,7 +24,7 @@ BUILDKIT_PROGRESS=plain
 DOCKER_COMPOSE=docker compose
 
 # TOOLS
-COVERAGE_TOOL_OPTS=--config-file .lcovrc
+COVERAGE_TOOL_OPTS=--config-file .lcovrc --ignore-errors empty
 
 # C++ specific
 SRC_DIR = src
