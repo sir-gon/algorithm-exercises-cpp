@@ -2,6 +2,6 @@
 
 namespace hackerrank::projecteuler {
 
-int euler001(int a, int b, int n);
+unsigned long euler001(int a, int b, int n);
 
 }
