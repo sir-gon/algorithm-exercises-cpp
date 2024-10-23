@@ -1,4 +1,4 @@
-FROM ubuntu:oracular-20240918 AS init
+FROM ubuntu:24.10 AS init
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
@@ -104,7 +104,7 @@ COPY --from=builder ${WORKDIR}/build ${WORKDIR}/
 
 CMD ["make", "test"]
 
-FROM ubuntu:oracular-20240918 AS production
+FROM ubuntu:24.10 AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
