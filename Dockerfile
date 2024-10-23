@@ -62,7 +62,7 @@ RUN apt-get update && \
   rm -rf /var/lib/apt/lists/*
 ADD https://apt.llvm.org/llvm-snapshot.gpg.key llvm-snapshot.gpg.key
 RUN apt-key add llvm-snapshot.gpg.key && \
-  apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main" && \
+  apt-add-repository "deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy main" && \
   apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests clang-format && \
   rm -rf /var/lib/apt/lists/*
