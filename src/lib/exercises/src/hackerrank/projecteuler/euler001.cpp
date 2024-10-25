@@ -43,7 +43,12 @@ unsigned long euler001(int a, int b, int n) {
   // Since, we need the sum of multiples less than N
   n = n - 1;
 
-  unsigned long lcm = (a * b) / gcd(a, b);
+  unsigned long the_gcd = gcd(a, b);
+  if (the_gcd == 0) {
+    return 0;
+  }
+
+  unsigned long lcm = (a * b) / the_gcd;
 
   return sum_of_arithmetic_progression(n, a) +
          sum_of_arithmetic_progression(n, b) -
