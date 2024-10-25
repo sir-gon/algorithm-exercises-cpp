@@ -24,7 +24,7 @@ BUILDKIT_PROGRESS=plain
 DOCKER_COMPOSE=docker compose
 
 # TOOLS
-COVERAGE_TOOL_OPTS=--config-file .lcovrc --ignore-errors empty
+COVERAGE_TOOL_OPTS=--config-file .lcovrc --ignore-errors empty --ignore-errors inconsistent
 
 # C++ specific
 SRC_DIR = src
@@ -96,10 +96,10 @@ test: env dependencies build
 	cd build && make test
 
 coverage: test
-	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info --no-external -c --exclude "build/vcpkg_installed" --exclude "test.cpp" -d .
+	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info --no-external --capture --exclude "build/vcpkg_installed" --exclude "test.cpp" --directory .
 
 coverage/html: coverage
-	genhtml ${COVERAGE_TOOL_OPTS} -o coverage/ -s --legend coverage/lcov.info
+	genhtml ${COVERAGE_TOOL_OPTS} -o coverage/ --show-details --legend coverage/lcov.info
 	open coverage/index.html
 
 outdated:
