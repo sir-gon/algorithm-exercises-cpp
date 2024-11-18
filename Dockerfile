@@ -1,4 +1,4 @@
-FROM ubuntu:24.10 AS init
+FROM ubuntu:25.04 AS init
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
@@ -104,7 +104,7 @@ COPY --from=builder ${WORKDIR}/build ${WORKDIR}/
 
 CMD ["make", "test"]
 
-FROM ubuntu:24.10 AS production
+FROM ubuntu:25.04 AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
