@@ -1,6 +1,6 @@
 ---
 
-name: C++ CI Tests
+name: C/C++ CMake CI Test
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -12,15 +12,11 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   build:
-    name: C++ CMake CI Test
+    name: C/C++ CMake CI Test
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        os: [
-          "windows-latest",
-          "ubuntu-latest",
-          "macOS-latest"
-        ]
+        os: ["windows-2022", "ubuntu-24.04", "macos-14"]
 
     steps:
       - name: Checkout repository

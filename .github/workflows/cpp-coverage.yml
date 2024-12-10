@@ -21,6 +21,7 @@ jobs:
 
       - name: Install Tools
         run: |
+          sudo apt update
           sudo apt-get install lcov
 
       - name: Check Tools

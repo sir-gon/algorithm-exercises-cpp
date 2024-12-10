@@ -1,7 +1,8 @@
-FROM ubuntu:24.10 AS init
+FROM ubuntu:noble-20241118.1 AS init
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
+ENV VCPKG_ROOT=/opt/vcpkg
 
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests make && \
@@ -13,23 +14,29 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
 # build tools
-RUN apt-get update && \
-  apt-get -y install --no-install-recommends --no-install-suggests build-essential cmake g++ make pkg-config && \
-  rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+  && apt-get -y install --no-install-recommends --no-install-suggests build-essential cmake g++ make pkg-config \
+  && rm -rf /var/lib/apt/lists/* \
+  && make --version \
+  && cmake --version \
+  && g++ --version
+
+
+ENV VCPKG_FORCE_SYSTEM_BINARIES=1
 
 # vcpkg Package Manager
-ADD https://github.com/microsoft/vcpkg/archive/refs/tags/2024.08.23.tar.gz vcpkg.tar.gz
+ADD https://github.com/microsoft/vcpkg/archive/refs/tags/2024.10.21.tar.gz vcpkg.tar.gz
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
-  ca-certificates curl git unzip zip && \
+  ca-certificates curl git ninja-build unzip zip && \
   rm -rf /var/lib/apt/lists/* && \
   mkdir /opt/vcpkg && \
   tar xf vcpkg.tar.gz --strip-components=1 -C /opt/vcpkg && \
+  rm -rf vcpkg.tar.gz && \
   /opt/vcpkg/bootstrap-vcpkg.sh && \
   ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && \
-  rm -rf vcpkg.tar.gz && \
+  rm -rf /var/lib/apt/lists/* && \
   vcpkg version
-ENV VCPKG_ROOT=/opt/vcpkg
 
 # sources
 COPY ./src ${WORKDIR}/src
@@ -104,7 +111,7 @@ COPY --from=builder ${WORKDIR}/build ${WORKDIR}/
 
 CMD ["make", "test"]
 
-FROM ubuntu:24.10 AS production
+FROM ubuntu:noble-20241118.1 AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
