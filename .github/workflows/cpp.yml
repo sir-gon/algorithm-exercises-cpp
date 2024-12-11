@@ -13,31 +13,49 @@ on: # yamllint disable-line rule:truthy
 jobs:
   build:
     name: C/C++ CMake CI Test
-    runs-on: ubuntu-24.04
     strategy:
       matrix:
-        os: ["windows-2022", "ubuntu-24.04", "macos-14"]
+        os: ["ubuntu-24.04", "macos-14"
+        # , "windows-2022"
+        ]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
+      - name: Install
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+              brew install vcpkg
+              git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
+              export VCPKG_ROOT="$HOME/vcpkg"
+              echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
+          elif [ "$RUNNER_OS" == "Linux" ]; then
+              echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+              echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
+          fi
+
       - name: Check Tools
         run: |
+          echo "-----------"
           make --version
+          echo "-----------"
           cmake --version
+          echo "-----------"
           vcpkg --version
+          echo "-----------"
 
       - name: Install dependencies
         run: |
           make dependencies
 
-      # yamllint disable rule:line-length
       - name: Build
         run: |
-          export VCPKG_ROOT=/usr/local/share/vcpkg
           make build
-      # yamllint enable rule:line-length
 
       - name: Test
-        run: make test
+        run: |
+          make test

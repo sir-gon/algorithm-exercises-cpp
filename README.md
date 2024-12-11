@@ -30,6 +30,9 @@ Developed with TDD.
 [![CMake](https://img.shields.io/badge/CMake-%23008FBA.svg?style=for-the-badge&logo=cmake&logoColor=white)](https://cmake.org/)
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
+> [!WARNING]
+> Not supported on Windows yet.
+
 Go to [Install and run](#install-and-run)
 
 ## What is this?
