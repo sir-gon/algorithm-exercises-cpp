@@ -32,6 +32,9 @@ Developed with TDD.
 
 Go to [Install and run](#install-and-run)
 
+> [!WARNING]
+> Not supported on Windows yet.
+
 ## What is this?
 
 This repository is part of a series that share and solve the same [objectives](#objetives),
