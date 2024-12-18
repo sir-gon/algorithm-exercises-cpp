@@ -75,4 +75,9 @@ jobs:
 
       - name: Test
         run: >
-          ctest --test-dir ${{ github.workspace }}/build/default
+          ctest
+          -C Debug
+          -T test
+          --rerun-failed
+          --output-on-failure
+          --test-dir ${{ github.workspace }}/build/default
