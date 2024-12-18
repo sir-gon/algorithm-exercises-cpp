@@ -17,12 +17,12 @@ std::string miniMaxSumCalculate(const std::vector<int> &arr) {
     throw std::invalid_argument("List too short. Pass at least 2 elements.");
   }
 
-  long tsum = 0;
-  long tmin = arr[0];
-  long tmax = arr[1];
+  long long tsum = 0;
+  long long tmin = arr[0];
+  long long tmax = arr[1];
 
   for (const int &value : arr) {
-    auto cvalue = (long)value;
+    auto cvalue = (long long)value;
     tsum += cvalue;
     tmin = std::min(tmin, cvalue);
     tmax = std::max(tmax, cvalue);
