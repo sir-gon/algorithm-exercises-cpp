@@ -1,6 +1,5 @@
 ---
-
-name: C/C++ CMake CI Test
+name: C/C++ CMake/LLVM MacOS CI Test
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -11,13 +10,11 @@ on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
-  build:
+  test:
     name: C/C++ CMake CI Test
     strategy:
       matrix:
-        os: ["ubuntu-24.04", "macos-14"
-        # , "windows-2022"
-        ]
+        os: ["macos-14"]
     runs-on: ${{ matrix.os }}
 
     steps:

@@ -1,0 +1,78 @@
+---
+name: C/C++ CMake/MSVC Windows CI Test
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: ["main"]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: C/C++ CMake CI Test
+    strategy:
+      matrix:
+        os: ["windows-2022"]
+        arch:
+          - amd64
+          - amd64_x86
+          # - amd64_arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Install
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+              brew install vcpkg
+              git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
+              export VCPKG_ROOT="$HOME/vcpkg"
+              echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
+          elif [ "$RUNNER_OS" == "Linux" ]; then
+              echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+              echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
+          fi
+
+      - name: Check Tools
+        run: |
+          echo "-----------"
+          make --version
+          echo "-----------"
+          cmake --version
+          echo "-----------"
+          vcpkg --version
+          echo "-----------"
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+
+      - name: Install dependencies
+        run: |
+          vcpkg --x-wait-for-lock integrate install
+          vcpkg --x-wait-for-lock install
+
+      - name: Pre Build
+        run: >
+          cmake.exe
+          -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_C_COMPILER=cl
+          -DCMAKE_CXX_COMPILER=cl
+          -S${{ github.workspace }}
+          -B${{ github.workspace }}/build/default -G "MinGW Makefiles"
+
+      - name: Build
+        run: |
+          cmake --build build/default
+
+      - name: Test
+        run: >
+          ctest --test-dir ${{ github.workspace }}/build/default
