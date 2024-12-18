@@ -1,6 +1,9 @@
 # Algorithm Exercises (C++17)
 
-[![C++17 CI](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp.yml)
+[![C/C++ CMake/GNU Linux CI Test](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp-linux.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp-linux.yml)
+[![C/C++ CMake/LLVM MacOS CI Test](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp-macos.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp-macos.yml)
+[![C/C++ CMake/MSVC Windows CI Test](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp-windows.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cpp-windows.yml)
+
 [![CppCheck Lint](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cppcheck.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cppcheck.yml)
 [![Markdown Lint](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/markdown-lint.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/markdown-lint.yml)
 [![YAML lint](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/yamllint.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/yamllint.yml)
@@ -29,9 +32,6 @@ Developed with TDD.
 [![C++17](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)](https://en.cppreference.com/w/cpp/17)
 [![CMake](https://img.shields.io/badge/CMake-%23008FBA.svg?style=for-the-badge&logo=cmake&logoColor=white)](https://cmake.org/)
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-
-> [!WARNING]
-> Not supported on Windows yet.
 
 Go to [Install and run](#install-and-run)
 
