@@ -1,15 +1,10 @@
-file (GLOB_RECURSE SOURCES "src/*.cpp")
+file (GLOB_RECURSE SOURCES "src/*.c" "src/*.cpp")
 add_library(exercises STATIC ${SOURCES})
 
 target_include_directories(exercises
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
-)
-
-target_compile_options(exercises
-        PUBLIC
-        -save-temps
 )
 
 install(TARGETS exercises

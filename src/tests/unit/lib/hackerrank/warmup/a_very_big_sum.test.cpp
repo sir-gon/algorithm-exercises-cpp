@@ -22,7 +22,7 @@ TEST_CASE("aVeryBigSum JSON Test Cases",
   json data = json::parse(f);
 
   for (auto testcase : data) {
-    long result = hackerrank::warmup::aVeryBigSum(testcase["input"]);
+    long long result = hackerrank::warmup::aVeryBigSum(testcase["input"]);
     CHECK(result == testcase["expected"]);
   }
 }

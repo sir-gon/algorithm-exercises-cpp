@@ -10,6 +10,17 @@
       },
       "generator": "Unix Makefiles",
       "binaryDir": "${sourceDir}/build/default"
+    },
+    {
+      "name": "windows",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl"
+      },
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build/default"
     }
   ]
 }
