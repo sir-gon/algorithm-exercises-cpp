@@ -84,6 +84,11 @@ return status code.
 
 - (⭐️) [Install and run directly with make](#install-and-run-directly-with-make)
 require runtime tools and GNU make installed in your SO.
+
+> [!NOTE]
+> Please see [Environment Notes](docs/Environment-Notes.md) for more details
+> about the tools required for your environment. In particular, **Windows**.
+
 - [Install and in Docker](#install-and-running-with-docker-) require Docker and
 docker compose installed.
 - [Install and in Docker with make](#install-and-running-with-docker--using-make)
