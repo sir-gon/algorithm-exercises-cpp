@@ -55,6 +55,9 @@ clean:
 	touch ./coverage/.gitkeep
 	sh -c "rm -fr -v ./vcpkg_installed" || true
 
+clean/test:
+	find . -name "*.gcda" -print -delete || true
+
 prebuild: dependencies
 	cmake --preset debug -B build
 
@@ -92,7 +95,7 @@ test/styling:
 format:
 	clang-format -i --verbose $(FILES)
 
-test: env dependencies build
+test: env dependencies build clean/test
 	cd build && make test
 
 coverage: test
