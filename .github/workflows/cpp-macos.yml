@@ -24,16 +24,17 @@ jobs:
       - name: Install
         shell: bash
         run: |
-          if [ "$RUNNER_OS" == "macOS" ]; then
-              brew install vcpkg
-              git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
-              export VCPKG_ROOT="$HOME/vcpkg"
-              echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" == "Linux" ]; then
-              echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-              echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
-          fi
+          export VCPKG_VERSION=2024.12.16
+          brew install vcpkg
+          git clone \
+            --depth 1 \
+            --branch $VCPKG_VERSION \
+            https://github.com/microsoft/vcpkg.git  \
+            --single-branch \
+            "$HOME/vcpkg"
+          export VCPKG_ROOT="$HOME/vcpkg"
+          sh $VCPKG_ROOT/bootstrap-vcpkg.sh
+          echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
 
       - name: Check Tools
         run: |
