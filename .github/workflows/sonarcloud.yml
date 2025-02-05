@@ -38,8 +38,8 @@ jobs:
         run: |
           make dependencies
 
-      - name: Install sonar-scanner and build-wrapper
-        uses: sonarsource/sonarcloud-github-c-cpp@v3
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@master
 
       # yamllint disable rule:line-length
       - name: Run build-wrapper
@@ -57,12 +57,13 @@ jobs:
           gcovr -e "src/tests/*" --sonarqube > coverage.xml
 
       # yamllint disable rule:line-length
-      - name: Run sonar-scanner
+      - name: Analyze with SonarQube / SonarCloud
+        uses: SonarSource/sonarqube-scan-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          sonar-scanner \
-            --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json" \
+        with:
+          # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
+          args: >
+            --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
             --define sonar.coverageReportPaths=coverage.xml
       # yamllint enable rule:line-length
