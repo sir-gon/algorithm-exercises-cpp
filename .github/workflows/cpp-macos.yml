@@ -24,7 +24,7 @@ jobs:
       - name: Install
         shell: bash
         run: |
-          export VCPKG_VERSION=2024.12.16
+          export VCPKG_VERSION=2025.01.13
           brew install vcpkg
           git clone \
             --depth 1 \
