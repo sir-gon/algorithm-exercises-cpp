@@ -1,5 +1,4 @@
 ---
-
 name: clang-format style check
 
 on: # yamllint disable-line rule:truthy
@@ -25,7 +24,9 @@ jobs:
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
           sudo apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main"
           sudo apt-get -y update
-          sudo apt-get -y install --no-install-recommends --no-install-suggests clang-format
+          sudo apt-get -y install --no-install-recommends --no-install-suggests clang-format-19
+          sudo update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-19) 100
+          sudo update-alternatives --set clang-format $(update-alternatives --list clang-format | grep clang-format-19)
           # yamllint enable rule:line-length
 
       - name: Check Tools
