@@ -142,7 +142,9 @@ compose/test: compose/build
 compose/run: compose/build
 	${DOCKER_COMPOSE} --profile production run --rm algorithm-exercises-cpp ls -alhR
 
-all: env dependencies test
+compose/all: compose/rebuild compose/test compose/lint
+
+all: env dependencies test lint
 
 run:
 	ls -alh
