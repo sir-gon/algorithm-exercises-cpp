@@ -28,7 +28,7 @@ COVERAGE_TOOL_OPTS=--config-file .lcovrc --ignore-errors empty --ignore-errors i
 
 # C++ specific
 SRC_DIR = src
-FILES := $(shell find $(SRC_DIR) -name '*.cpp' -o -name '*.h' -o -name '*.hpp' -o -name '*.inl')
+FILES := $(shell find $(SRC_DIR) -name '*.cpp' -o -name '*.c' -o -name '*.h' -o -name '*.hpp' -o -name '*.inl')
 
 .MAIN: test
 .PHONY: all clean dependencies help list test outdated
