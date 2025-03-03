@@ -24,8 +24,7 @@ jobs:
       - name: Install
         shell: bash
         run: |
-          export VCPKG_VERSION=2025.01.13
-          brew install vcpkg
+          export VCPKG_VERSION=2025.02.14
           git clone \
             --depth 1 \
             --branch $VCPKG_VERSION \
@@ -33,6 +32,7 @@ jobs:
             --single-branch \
             "$HOME/vcpkg"
           export VCPKG_ROOT="$HOME/vcpkg"
+          echo "$VCPKG_ROOT" >> $GITHUB_PATH
           sh $VCPKG_ROOT/bootstrap-vcpkg.sh
           echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
 
