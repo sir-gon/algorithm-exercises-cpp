@@ -24,16 +24,16 @@ RUN apt-get update \
 
 
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
+ENV VCPKG_VERSION=2024.10.21
+ENV VCPKG_ROOT=/opt/vcpkg
 
 # vcpkg Package Manager
-ADD https://github.com/microsoft/vcpkg/archive/refs/tags/2024.10.21.tar.gz vcpkg.tar.gz
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
   ca-certificates curl git ninja-build unzip zip && \
   rm -rf /var/lib/apt/lists/* && \
   mkdir /opt/vcpkg && \
-  tar xf vcpkg.tar.gz --strip-components=1 -C /opt/vcpkg && \
-  rm -rf vcpkg.tar.gz && \
+  git clone --branch ${VCPKG_VERSION} https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" && \
   /opt/vcpkg/bootstrap-vcpkg.sh && \
   ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && \
   rm -rf /var/lib/apt/lists/* && \
