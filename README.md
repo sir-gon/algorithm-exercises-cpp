@@ -176,8 +176,8 @@ g++ --version
 ```
 
 ```text
-Apple clang version 15.0.0 (clang-1500.3.9.4)
-Target: x86_64-apple-darwin23.6.0
+Apple clang version 17.0.0 (clang-1700.0.13.5)
+Target: x86_64-apple-darwin24.6.0
 Thread model: posix
 InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
 ```
@@ -189,7 +189,7 @@ cppcheck --version
 ```
 
 ```text
-Cppcheck 2.15.0
+Cppcheck 2.18.0
 ```
 
 ## Algorithm excersices sources
