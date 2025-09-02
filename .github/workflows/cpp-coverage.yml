@@ -13,16 +13,29 @@ on: # yamllint disable-line rule:truthy
 jobs:
   coverage:
     name: C++ CMake CI Coverage
-    runs-on: ubuntu-24.04
+    runs-on: macos-14
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
       - name: Install Tools
+        shell: bash
         run: |
-          sudo apt update
-          sudo apt-get install lcov
+          # Install vcpkg
+          export VCPKG_VERSION=2025.02.14
+          git clone \
+            --depth 1 \
+            --branch $VCPKG_VERSION \
+            https://github.com/microsoft/vcpkg.git  \
+            --single-branch \
+            "$HOME/vcpkg"
+          export VCPKG_ROOT="$HOME/vcpkg"
+          echo "$VCPKG_ROOT" >> $GITHUB_PATH
+          sh $VCPKG_ROOT/bootstrap-vcpkg.sh
+          echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
+          # lcov is available via homebrew
+          brew install lcov
 
       - name: Check Tools
         run: |

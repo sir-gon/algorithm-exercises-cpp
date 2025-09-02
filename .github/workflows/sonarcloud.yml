@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       # Directory where build-wrapper output will be placed
-      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
+      BUILD_WRAPPER_OUT_DIR: build
     steps:
       - uses: actions/checkout@v5
         with:
@@ -64,6 +64,6 @@ jobs:
         with:
           # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
           args: >
-            --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
+            --define sonar.cfamily.compile-commands=${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json
             --define sonar.coverageReportPaths=coverage.xml
       # yamllint enable rule:line-length
