@@ -20,6 +20,15 @@ jobs:
         with:
           # Shallow clones should be disabled for a better relevancy of analysis
           fetch-depth: 0
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: llvm
+          vcvarsall: true
+          cmake: true
+          ninja: true
+          vcpkg: true
+          cppcheck: true
       - name: Install Tools
         run: |
           sudo rm /usr/lib/python3.*/EXTERNALLY-MANAGED
@@ -36,6 +45,7 @@ jobs:
 
       - name: Check Tools
         run: |
+          c++ --version
           make --version
           cmake --version
           vcpkg --version
