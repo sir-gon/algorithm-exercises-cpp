@@ -36,10 +36,17 @@ jobs:
 
       - name: Check Tools
         run: |
+          echo "-----------"
+          c++ --version
+          echo "-----------"
           make --version
+          echo "-----------"
           cmake --version
+          echo "-----------"
           vcpkg --version
+          echo "-----------"
           lcov --version
+          echo "-----------"
           gcovr --version
 
       - name: Install dependencies
@@ -55,7 +62,6 @@ jobs:
           export VCPKG_ROOT=/usr/local/share/vcpkg
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make build
       # yamllint enable rule:line-length
-
       - name: Run tests to generate coverage statistics
         run: |
           make coverage
