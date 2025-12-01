@@ -1,5 +1,4 @@
 ---
-
 name: C++ CI Coverage
 
 on: # yamllint disable-line rule:truthy
@@ -39,9 +38,15 @@ jobs:
 
       - name: Check Tools
         run: |
+          echo "-----------"
+          c++ --version
+          echo "-----------"
           make --version
+          echo "-----------"
           cmake --version
+          echo "-----------"
           vcpkg --version
+          echo "-----------"
           lcov --version
 
       - name: Install dependencies
@@ -54,7 +59,6 @@ jobs:
           export VCPKG_ROOT=/usr/local/share/vcpkg
           make build
       # yamllint enable rule:line-length
-
       - name: Test / Coverage
         run: make coverage
 

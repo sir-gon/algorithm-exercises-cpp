@@ -39,6 +39,8 @@ jobs:
       - name: Check Tools
         run: |
           echo "-----------"
+          c++ --version
+          echo "-----------"
           make --version
           echo "-----------"
           cmake --version
