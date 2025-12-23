@@ -78,7 +78,7 @@ RUN apt-key add llvm-snapshot.gpg.key && \
 ADD https://deb.nodesource.com/setup_22.x nodesource_setup.sh
 RUN bash nodesource_setup.sh && \
   apt-get -y install --no-install-recommends --no-install-suggests nodejs && \
-  npm install -g --ignore-scripts markdownlint-cli && \
+  npm install -g --ignore-scripts markdownlint-cli@0.47.0 && \
   apt-get -y install --no-install-recommends --no-install-suggests python3-minimal python3-pip && \
   rm /usr/lib/python3.*/EXTERNALLY-MANAGED && \
   pip install --no-cache-dir yamllint && \
