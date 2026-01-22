@@ -71,7 +71,7 @@ jobs:
             # yamllint enable rule:line-length
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Check Tools
         run: |
