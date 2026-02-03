@@ -62,10 +62,12 @@ jobs:
       - name: Test / Coverage
         run: make coverage
 
+      # yamllint disable rule:line-length
       - name: Upload coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de #v5
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         with:
           directory: ./coverage
           files: coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }} # required
           verbose: true # optional (default = false)
+          # yamllint enable rule:line-length
