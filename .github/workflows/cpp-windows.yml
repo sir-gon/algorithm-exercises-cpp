@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Install
         shell: bash
@@ -52,10 +52,11 @@ jobs:
           vcpkg --version
           echo "-----------"
 
-      - uses: ilammy/msvc-dev-cmd@v1
+      # yamllint disable rule:line-length
+      - uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
         with:
           arch: ${{ matrix.arch }}
-
+      # yamllint enable rule:line-length
       - name: Install dependencies
         run: |
           vcpkg --x-wait-for-lock integrate install
