@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_VERSION=ubuntu:latest
+ARG BASE_IMAGE_VERSION=ubuntu:noble-20260210.1
 FROM ${BASE_IMAGE_VERSION} AS init
 
 ENV WORKDIR=/app
@@ -22,7 +22,7 @@ RUN apt-get update \
   && cmake --version \
   && g++ --version
 
-
+# vcpkg Package Manager
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
 ENV VCPKG_VERSION=2025.07.25
 ENV VCPKG_ROOT=/opt/vcpkg
