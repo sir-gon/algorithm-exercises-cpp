@@ -55,7 +55,7 @@ jobs:
 
       # yamllint disable rule:line-length
       - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@f099b441665cb71b0414100cfaf6d835492cee5f
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@f00de44f574073760c9deaf47f694e10431f3988
       # yamllint enable rule:line-length
 
       # yamllint disable rule:line-length
@@ -74,7 +74,7 @@ jobs:
 
       # yamllint disable rule:line-length
       - name: Analyze with SonarQube / SonarCloud
-        uses: SonarSource/sonarqube-scan-action@f099b441665cb71b0414100cfaf6d835492cee5f
+        uses: SonarSource/sonarqube-scan-action@f00de44f574073760c9deaf47f694e10431f3988
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
