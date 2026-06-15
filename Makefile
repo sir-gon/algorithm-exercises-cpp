@@ -103,8 +103,13 @@ coverage: test
 
 coverage/html: coverage
 	genhtml ${COVERAGE_TOOL_OPTS} -o coverage/ --show-details --legend coverage/lcov.info
-	open coverage/index.html
-
+	@if [ "$$(uname)" = "Darwin" ]; then \
+		open coverage/index.html; \
+	elif [ "$$(uname | tr '[:upper:]' '[:lower:]')" = "mingw32" ] || [ "$$(uname | tr '[:upper:]' '[:lower:]')" = "mingw64" ] || [ "$$(uname | tr '[:upper:]' '[:lower:]')" = "cygwin" ]; then \
+		cmd /c start coverage/index.html; \
+	else \
+		echo "Coverage HTML generated: coverage/index.html"; \
+	fi
 outdated:
 
 update: dependencies outdated
