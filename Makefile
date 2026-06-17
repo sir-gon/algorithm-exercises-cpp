@@ -107,7 +107,11 @@ test: env dependencies build clean/test
 	cd build && make test
 
 coverage: test
-	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info --no-external --capture --exclude "build/vcpkg_installed" --exclude "test.cpp" --directory .
+	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info \
+		--no-external --capture \
+		--exclude "build/vcpkg_installed" \
+		--exclude "tests/*" \
+		--directory .
 
 coverage/html: coverage
 	genhtml ${COVERAGE_TOOL_OPTS} -o coverage/ --show-details --legend coverage/lcov.info
