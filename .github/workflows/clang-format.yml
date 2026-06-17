@@ -12,7 +12,7 @@ on: # yamllint disable-line rule:truthy
 jobs:
   lint:
     name: clang-format style check
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Checkout repository
@@ -21,12 +21,15 @@ jobs:
       - name: Install dependencies
         # yamllint disable rule:line-length
         run: |
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main"
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
+          | sudo gpg --dearmor -o /etc/apt/keyrings/llvm-snapshot.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/llvm-snapshot.gpg] http://apt.llvm.org/resolute/ llvm-toolchain-resolute-22 main" \
+          | sudo tee /etc/apt/sources.list.d/llvm.list && \
           sudo apt-get -y update
-          sudo apt-get -y install --no-install-recommends --no-install-suggests clang-format-19
-          sudo update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-19) 100
-          sudo update-alternatives --set clang-format $(update-alternatives --list clang-format | grep clang-format-19)
+          sudo apt-get -y install --no-install-recommends --no-install-suggests clang-format-22
+          sudo update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-22) 100
+          sudo update-alternatives --set clang-format $(update-alternatives --list clang-format | grep clang-format-22)
           # yamllint enable rule:line-length
 
       - name: Check Tools

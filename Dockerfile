@@ -16,10 +16,11 @@ ENV TZ=Etc/UTC
 
 # build tools
 RUN apt-get update \
-  && apt-get -y install --no-install-recommends --no-install-suggests build-essential cmake g++ make pkg-config \
+  && apt-get -y install --no-install-recommends --no-install-suggests build-essential cmake g++ gcc make pkg-config \
   && rm -rf /var/lib/apt/lists/* \
   && make --version \
   && cmake --version \
+  && gcc --version \
   && g++ --version
 
 # vcpkg Package Manager
@@ -33,7 +34,7 @@ RUN apt-get -y update && \
   ca-certificates curl git ninja-build unzip zip && \
   rm -rf /var/lib/apt/lists/* && \
   mkdir /opt/vcpkg && \
-  git clone --branch ${VCPKG_VERSION} https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" && \
+  git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" && \
   /opt/vcpkg/bootstrap-vcpkg.sh && \
   ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && \
   rm -rf /var/lib/apt/lists/* && \
@@ -68,11 +69,15 @@ FROM builder AS lint
 RUN apt-get update && \
   apt-get -y install --no-install-recommends --no-install-suggests gnupg software-properties-common && \
   rm -rf /var/lib/apt/lists/*
-ADD https://apt.llvm.org/llvm-snapshot.gpg.key llvm-snapshot.gpg.key
-RUN apt-key add llvm-snapshot.gpg.key && \
-  apt-add-repository -y "deb https://apt.llvm.org/noble/ llvm-toolchain-noble-20 main" && \
+
+RUN mkdir -p /etc/apt/keyrings && \
+  curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
+  | gpg --dearmor -o /etc/apt/keyrings/llvm-snapshot.gpg && \
+  echo "deb [signed-by=/etc/apt/keyrings/llvm-snapshot.gpg] http://apt.llvm.org/resolute/ llvm-toolchain-resolute-22 main" \
+  | tee /etc/apt/sources.list.d/llvm.list && \
   apt-get -y update && \
-  apt-get -y install --no-install-recommends --no-install-suggests clang-format && \
+  apt-get -y install --no-install-recommends --no-install-suggests clang-format-22 && \
+  update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-22) 100 && \
   rm -rf /var/lib/apt/lists/*
 
 ADD https://deb.nodesource.com/setup_22.x nodesource_setup.sh
@@ -81,9 +86,15 @@ RUN bash nodesource_setup.sh && \
   npm install -g --ignore-scripts markdownlint-cli@0.47.0 && \
   apt-get -y install --no-install-recommends --no-install-suggests python3-minimal python3-pip && \
   rm /usr/lib/python3.*/EXTERNALLY-MANAGED && \
-  pip install --no-cache-dir yamllint && \
+  apt-get -y install --no-install-recommends --no-install-suggests yamllint && \
   apt-get -y install --no-install-recommends --no-install-suggests cppcheck && \
   rm -rf /var/lib/apt/lists/*
+
+# Tooling test
+RUN clang-format --version && \
+  markdownlint --version && \
+  yamllint --version && \
+  cppcheck --version
 
 # Code source
 COPY ./src ${WORKDIR}/src
