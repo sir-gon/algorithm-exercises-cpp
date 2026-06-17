@@ -16,8 +16,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-SET(GCC_COVERAGE_COMPILE_FLAGS "-fsanitize=address -fprofile-arcs -ftest-coverage -g -O0")
-SET(GCC_COVERAGE_LINK_FLAGS "--coverage")
+# -fsanitize=address causes SIGILL on macOS (Clang 17 + macOS 26 Intel) due to
+# ASan runtime incompatibility. Coverage instrumentation still works without it.
+if(APPLE)
+  SET(GCC_COVERAGE_COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -O0 -save-temps")
+  SET(GCC_COVERAGE_LINK_FLAGS "--coverage")
+else()
+  SET(GCC_COVERAGE_COMPILE_FLAGS "-fsanitize=address -fprofile-arcs -ftest-coverage -g -O0 -save-temps")
+  SET(GCC_COVERAGE_LINK_FLAGS "--coverage")
+endif()
 
 if (CMAKE_GENERATOR MATCHES "Unix Makefiles")
 

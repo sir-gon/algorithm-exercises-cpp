@@ -34,6 +34,14 @@ FILES := $(shell find $(SRC_DIR) -name '*.cpp' -o -name '*.c' -o -name '*.h' -o 
 .PHONY: all clean dependencies help list test outdated
 .EXPORT_ALL_VARIABLES: # (2)
 
+define crono
+	@start=$$(date +%s); \
+		$(1); \
+		end=$$(date +%s); \
+		diff=$$((end - start)); \
+		printf "Total time: %02d:%02d:%02d\n" $$((diff/3600)) $$((diff%3600/60)) $$((diff%60))
+endef
+
 help: list
 
 list:
@@ -99,7 +107,11 @@ test: env dependencies build clean/test
 	cd build && make test
 
 coverage: test
-	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info --no-external --capture --exclude "build/vcpkg_installed" --exclude "test.cpp" --directory .
+	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info \
+		--no-external --capture \
+		--exclude "build/vcpkg_installed" \
+		--exclude "tests/*" \
+		--directory .
 
 coverage/html: coverage
 	genhtml ${COVERAGE_TOOL_OPTS} -o coverage/ --show-details --legend coverage/lcov.info
@@ -149,7 +161,8 @@ compose/run: compose/build
 
 compose/all: compose/rebuild compose/test compose/lint
 
-all: env dependencies test lint
+all:
+	$(call crono, make clean; make dependencies; make build; make test; make lint; make coverage/html)
 
 run:
 	ls -alh

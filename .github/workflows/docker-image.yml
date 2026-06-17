@@ -18,7 +18,7 @@ jobs:
 
   build:
     name: "Build Docker images"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
@@ -73,7 +73,7 @@ jobs:
 
   lint:
     name: "Run in docker: LINT"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: build
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
@@ -98,7 +98,7 @@ jobs:
 
   test:
     name: "Run in docker: TEST"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: build
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
@@ -125,7 +125,7 @@ jobs:
   # yamllint disable rule:line-length
   # security:
   #   name: "Snyk Container"
-  #   runs-on: ubuntu-24.04
+  #   runs-on: ubuntu-26.04
   #   needs: build
   #   permissions:
   #     actions: read
@@ -174,7 +174,7 @@ jobs:
 
   scan:
     name: "Trivy"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: build
     permissions:
       actions: read
