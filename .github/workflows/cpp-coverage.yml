@@ -1,5 +1,5 @@
 ---
-name: C++ CI Coverage
+name: C/C++ CI Coverage
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -11,35 +11,27 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   coverage:
-    name: C++ CMake CI Coverage
-    runs-on: macos-15
+    name: C/C++ CMake CI Coverage
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
-      - name: Install Tools
+      - name: Install/Adjust VCPKG
         shell: bash
         run: |
-          # Install vcpkg
-          export VCPKG_VERSION=2025.02.14
-          git clone \
-            --depth 1 \
-            --branch $VCPKG_VERSION \
-            https://github.com/microsoft/vcpkg.git  \
-            --single-branch \
-            "$HOME/vcpkg"
-          export VCPKG_ROOT="$HOME/vcpkg"
-          echo "$VCPKG_ROOT" >> $GITHUB_PATH
-          sh $VCPKG_ROOT/bootstrap-vcpkg.sh
-          echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
-          # lcov is available via homebrew
-          brew install lcov
+          echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
+
+      - name: Install Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install lcov
 
       - name: Check Tools
         run: |
           echo "-----------"
-          c++ --version
+          g++ --version
           echo "-----------"
           make --version
           echo "-----------"
@@ -53,21 +45,19 @@ jobs:
         run: |
           make dependencies
 
-      # yamllint disable rule:line-length
       - name: Build
         run: |
-          export VCPKG_ROOT=/usr/local/share/vcpkg
           make build
-      # yamllint enable rule:line-length
+
       - name: Test / Coverage
         run: make coverage
 
       # yamllint disable rule:line-length
       - name: Upload coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        # yamllint enable rule:line-length
         with:
           directory: ./coverage
           files: coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }} # required
           verbose: true # optional (default = false)
-          # yamllint enable rule:line-length
