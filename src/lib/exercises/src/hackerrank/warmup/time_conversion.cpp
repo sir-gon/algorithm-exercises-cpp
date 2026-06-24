@@ -41,6 +41,10 @@ std::string timeConversion(const std::string &s) {
   int hour;
   hour_str >> hour;
 
+  if (hour < 0 || hour > 23) {
+    throw std::invalid_argument("Invalid hour value: " + std::to_string(hour));
+  }
+
   if (hour >= 12) {
     hour = 0;
   }
@@ -51,7 +55,10 @@ std::string timeConversion(const std::string &s) {
 
   hour_str.str("");
   hour_str.clear();
+  // Validar que hour esté en un rango válido (0-23 para horas)
+
   hour_str << std::setfill('0') << std::setw(2) << hour;
+
   time[0] = hour_str.str();
 
   std::string conversion;

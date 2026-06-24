@@ -36,3 +36,8 @@ TEST_CASE("time_conversion helper functions edge cases",
   CHECK(hackerrank::warmup::firstN("", 0) == "");
   CHECK(hackerrank::warmup::lastN("", 0) == "");
 }
+
+TEST_CASE("time_conversion invalid input", "[hackerrank] [invalid] [warmup]") {
+  CHECK_THROWS_AS(hackerrank::warmup::timeConversion("25:01:00AM"),
+                  std::invalid_argument);
+}
