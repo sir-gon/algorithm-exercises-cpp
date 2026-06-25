@@ -55,9 +55,8 @@ std::string timeConversion(const std::string &s) {
 
   hour_str.str("");
   hour_str.clear();
-  const int safe_hour = hour;
 
-  hour_str << std::setfill('0') << std::setw(2) << safe_hour;
+  hour_str << std::setfill('0') << std::setw(2) << (hour % 24);
 
   time[0] = hour_str.str();
 
