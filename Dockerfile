@@ -80,10 +80,10 @@ RUN mkdir -p /etc/apt/keyrings && \
   update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-22) 100 && \
   rm -rf /var/lib/apt/lists/*
 
-ADD https://deb.nodesource.com/setup_22.x nodesource_setup.sh
+ADD https://deb.nodesource.com/setup_26.x nodesource_setup.sh
 RUN bash nodesource_setup.sh && \
   apt-get -y install --no-install-recommends --no-install-suggests nodejs && \
-  npm install -g --ignore-scripts markdownlint-cli@0.47.0 && \
+  npm install -g --ignore-scripts markdownlint-cli@0.49.1 && \
   apt-get -y install --no-install-recommends --no-install-suggests python3-minimal python3-pip && \
   rm /usr/lib/python3.*/EXTERNALLY-MANAGED && \
   apt-get -y install --no-install-recommends --no-install-suggests yamllint && \
@@ -104,7 +104,7 @@ COPY ./CMakePresets.json ${WORKDIR}/CMakePresets.json
 COPY ./Makefile ${WORKDIR}/
 
 # markdownlint conf
-COPY ./.markdownlint.yaml ${WORKDIR}/
+COPY ./.markdownlint.json ${WORKDIR}/
 
 # yamllint conf
 COPY ./.yamllint ${WORKDIR}/
