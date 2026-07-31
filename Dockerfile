@@ -71,9 +71,9 @@ RUN apt-get update && \
   rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/apt/keyrings && \
-  curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
+  curl -fsSL --proto "=https" https://apt.llvm.org/llvm-snapshot.gpg.key \
   | gpg --dearmor -o /etc/apt/keyrings/llvm-snapshot.gpg && \
-  echo "deb [signed-by=/etc/apt/keyrings/llvm-snapshot.gpg] http://apt.llvm.org/resolute/ llvm-toolchain-resolute-22 main" \
+  echo "deb [signed-by=/etc/apt/keyrings/llvm-snapshot.gpg] https://apt.llvm.org/resolute/ llvm-toolchain-resolute-22 main" \
   | tee /etc/apt/sources.list.d/llvm.list && \
   apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests clang-format-22 && \
