@@ -77,7 +77,8 @@ dependencies:
 	vcpkg --x-wait-for-lock install
 
 lint/markdown:
-	markdownlint '**/*.md' && echo '✔  Your code looks good.'
+	markdownlint --config .markdownlint.json '**/*.md' \
+	&& echo '✔  Your code looks good.'
 
 lint/yaml:
 	yamllint --stric . && echo '✔  Your code looks good.'
