@@ -9,6 +9,9 @@ on: # yamllint disable-line rule:truthy
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  VCPKG_VERSION: 2026.07.29
+
 jobs:
   test:
     name: C/C++ CMake CI Test
@@ -29,7 +32,7 @@ jobs:
       - name: Install
         shell: bash
         run: |
-          export VCPKG_VERSION=2025.02.14
+          export VCPKG_VERSION=${VCPKG_VERSION}
           git clone \
             --depth 1 \
             --branch $VCPKG_VERSION \
