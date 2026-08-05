@@ -35,11 +35,7 @@ std::string timeConversion(const std::string &s) {
     time.push_back(segment);
   }
 
-  std::stringstream hour_str;
-  hour_str << time[0];
-
-  int hour;
-  hour_str >> hour;
+  int hour = std::stoi(time[0]);
 
   if (hour < 0 || hour > 23) {
     throw std::invalid_argument("Invalid hour value: " + std::to_string(hour));
@@ -52,6 +48,8 @@ std::string timeConversion(const std::string &s) {
   if (meridian.compare("PM") == 0) {
     hour += 12;
   }
+
+  std::stringstream hour_str;
 
   hour_str.str("");
   hour_str.clear();
