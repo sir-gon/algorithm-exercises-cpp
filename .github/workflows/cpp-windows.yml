@@ -15,12 +15,8 @@ jobs:
     strategy:
       matrix:
         os:
-          - "windows-2022"
+          - "windows-11-arm"
           - "windows-2025"
-        arch:
-          - amd64
-          - amd64_x86
-          # - amd64_arm64
 
     runs-on: ${{ matrix.os }}
 
@@ -32,6 +28,17 @@ jobs:
         shell: bash
         run: |
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+
+      - name: Check MSVC
+        shell: cmd
+        run: |
+          where cl
+          cl
+          where link
+          where ml64
 
       - name: Check Tools
         run: |
@@ -45,11 +52,6 @@ jobs:
           vcpkg --version
           echo "-----------"
 
-      # yamllint disable rule:line-length
-      - uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
-        with:
-          arch: ${{ matrix.arch }}
-      # yamllint enable rule:line-length
       - name: Install dependencies
         run: |
           vcpkg --x-wait-for-lock integrate install
