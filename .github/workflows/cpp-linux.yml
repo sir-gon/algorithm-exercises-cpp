@@ -9,16 +9,18 @@ on: # yamllint disable-line rule:truthy
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  VCPKG_VERSION: 2026.07.29
+
 jobs:
   test:
     name: C/C++ CMake CI Test
     strategy:
       matrix:
         os:
-          - "ubuntu-24.04"
-          - "ubuntu-24.04-arm"
           - "ubuntu-26.04"
           - "ubuntu-26.04-arm"
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -28,12 +30,21 @@ jobs:
       - name: Install
         shell: bash
         run: |
-          echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
+          export VCPKG_VERSION=${VCPKG_VERSION}
+          git clone \
+            --branch $VCPKG_VERSION \
+            https://github.com/microsoft/vcpkg.git  \
+            --single-branch \
+            "$HOME/vcpkg"
+          export VCPKG_ROOT="$HOME/vcpkg"
+          echo "$VCPKG_ROOT" >> $GITHUB_PATH
+          sh $VCPKG_ROOT/bootstrap-vcpkg.sh
+          echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
 
       - name: Check Tools
         run: |
           echo "-----------"
-          c++ --version
+          cc --version
           echo "-----------"
           make --version
           echo "-----------"
