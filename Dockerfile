@@ -36,18 +36,19 @@ RUN apt-get update \
 
 # vcpkg Package Manager
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
-ENV VCPKG_VERSION=2025.07.25
+ENV VCPKG_VERSION=2026.07.29
 ENV VCPKG_ROOT=/opt/vcpkg
 
 # vcpkg Package Manager
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
-  ca-certificates curl git ninja-build unzip zip && \
-  rm -rf /var/lib/apt/lists/* && \
-  mkdir /opt/vcpkg && \
-  git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" && \
-  /opt/vcpkg/bootstrap-vcpkg.sh && \
-  ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && \
+  ca-certificates curl git ninja-build unzip zip \
+  && rm -rf /var/lib/apt/lists/* \
+  && mkdir /opt/vcpkg \
+  && git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" \
+  && /opt/vcpkg/bootstrap-vcpkg.sh \
+  && apt-get -y autoremove curl \
+  && ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && \
   rm -rf /var/lib/apt/lists/* && \
   vcpkg version
 
