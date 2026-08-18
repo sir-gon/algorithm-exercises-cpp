@@ -139,12 +139,20 @@ compose/rebuild: env
 	${DOCKER_COMPOSE} --profile testing build --no-cache
 	${DOCKER_COMPOSE} --profile production build --no-cache
 
-compose/lint/markdown: compose/build
-	${DOCKER_COMPOSE} --profile lint build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make lint/markdown
+compose/lint/markdown:
+	${DOCKER_COMPOSE} --profile lint run --rm \
+    --workdir /workspace \
+    -v "$$(pwd):/workspace" \
+    markdownlint --config /workspace/.markdownlint.json '/workspace/**/*.md' \
+		&& echo '✔  Your code looks good.'
 
-compose/lint/yaml: compose/build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make lint/yaml
+
+compose/lint/yaml:
+	${DOCKER_COMPOSE} --profile lint run --rm \
+    --workdir /workspace \
+    -v "$$(pwd):/workspace" \
+    yamllint --strict /workspace \
+		&& echo '✔  Your code looks good.'
 
 compose/test/styling: compose/build
 	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make test/styling
