@@ -85,6 +85,26 @@ jobs:
           name: ${{ env.ARTIFACT_NAME }}_prod
           path: /tmp/${{ env.ARTIFACT_NAME }}_prod.tar
 
+  run-lint-markdown:
+    name: "Run in docker: Markdown LINT"
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Run markdown lint
+        run: >
+          make compose/lint/markdown
+
+  run-lint-yaml:
+    name: "Run in docker: YAML LINT"
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Run YAML lint
+        run: >
+          make compose/lint/yaml
+
   run-lint:
     name: "Run in docker: LINT"
     runs-on: ubuntu-26.04
