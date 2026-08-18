@@ -60,7 +60,6 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME }}_test
           path: /tmp/${{ env.ARTIFACT_NAME }}_test.tar
-      # Production image build moved to separate job `build-prod`
 
   build-prod:
     name: "Build Docker PRODUCTION image"
