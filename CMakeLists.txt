@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(algoritm-exercises-cpp CXX C ASM)
+project(algorithm-exercises-cpp CXX C ASM)
+
+# Option to control whether compiler should save intermediate temps (assembly files)
+option(GENERATE_ASM "Generate assembly outputs (*.s) during the build" OFF)
+
+# Allow overriding from environment variable GENERATE_ASM (1/ON to enable)
+if(DEFINED ENV{GENERATE_ASM})
+  if("$ENV{GENERATE_ASM}" STREQUAL "1" OR "$ENV{GENERATE_ASM}" STREQUAL "ON")
+    set(GENERATE_ASM ON CACHE BOOL "Generate assembly outputs" FORCE)
+  endif()
+endif()
 
 # Must be set before including CTest so that these arguments are applied when
 # running `$ ninja test` or `$ make test`.
@@ -19,10 +29,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # -fsanitize=address causes SIGILL on macOS (Clang 17 + macOS 26 Intel) due to
 # ASan runtime incompatibility. Coverage instrumentation still works without it.
 if(APPLE)
-  SET(GCC_COVERAGE_COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -O0 -save-temps")
+  if(GENERATE_ASM)
+    SET(SAVE_TEMPS_FLAG "-save-temps")
+  else()
+    SET(SAVE_TEMPS_FLAG "")
+  endif()
+  SET(GCC_COVERAGE_COMPILE_FLAGS "-fprofile-arcs -ftest-coverage -g -O0 ${SAVE_TEMPS_FLAG}")
   SET(GCC_COVERAGE_LINK_FLAGS "--coverage")
 else()
-  SET(GCC_COVERAGE_COMPILE_FLAGS "-fsanitize=address -fprofile-arcs -ftest-coverage -g -O0 -save-temps")
+  if(GENERATE_ASM)
+    SET(SAVE_TEMPS_FLAG "-save-temps")
+  else()
+    SET(SAVE_TEMPS_FLAG "")
+  endif()
+  SET(GCC_COVERAGE_COMPILE_FLAGS "-fsanitize=address -fprofile-arcs -ftest-coverage -g -O0 ${SAVE_TEMPS_FLAG}")
   SET(GCC_COVERAGE_LINK_FLAGS "--coverage")
 endif()
 

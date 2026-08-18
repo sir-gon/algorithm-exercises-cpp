@@ -56,6 +56,7 @@ env:
 
 clean:
 	sh -c "rm -fr -v *.gcov" || true
+	sh -c "rm -fr -v .cache" || true
 	sh -c "rm -fr -v ./build/*" || true
 	sh -c "rm -fr -v ./build/.*" || true
 	touch ./build/.gitkeep
@@ -81,11 +82,14 @@ lint/markdown:
 	&& echo '✔  Your code looks good.'
 
 lint/yaml:
-	yamllint --stric . && echo '✔  Your code looks good.'
+	yamllint --strict . && echo '✔  Your code looks good.'
 
-lint: lint/markdown lint/yaml test/styling test/static
+lint: test/styling test/static
+lint-no-deps: test/styling test/static-no-deps
 
-test/static: prebuild
+lint/all: lint/markdown lint/yaml test/styling test/static
+
+test/static-no-deps:
 	cppcheck \
 		--project=build/compile_commands.json \
 		--enable=all \
@@ -97,6 +101,8 @@ test/static: prebuild
 		--error-exitcode=13 \
 		--suppress=missingIncludeSystem \
 		--showtime=summary
+
+test/static: prebuild test/static-no-deps
 
 test/styling:
 	clang-format --dry-run --Werror $(FILES)
@@ -139,26 +145,34 @@ compose/rebuild: env
 	${DOCKER_COMPOSE} --profile testing build --no-cache
 	${DOCKER_COMPOSE} --profile production build --no-cache
 
-compose/lint/markdown: compose/build
-	${DOCKER_COMPOSE} --profile lint build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make lint/markdown
+compose/lint/markdown:
+	${DOCKER_COMPOSE} --profile lint run --rm \
+    --workdir /workspace \
+    -v "$$(pwd):/workspace" \
+    markdownlint --config /workspace/.markdownlint.json '/workspace/**/*.md' \
+		&& echo '✔  Your code looks good.'
 
-compose/lint/yaml: compose/build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make lint/yaml
+
+compose/lint/yaml:
+	${DOCKER_COMPOSE} --profile lint run --rm \
+    --workdir /workspace \
+    -v "$$(pwd):/workspace" \
+    yamllint --strict /workspace \
+		&& echo '✔  Your code looks good.'
 
 compose/test/styling: compose/build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make test/styling
+	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-c-lint make test/styling
 
 compose/test/static: compose/build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make test/static
+	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-c-lint make test/static-no-deps
 
 compose/lint: compose/lint/markdown compose/lint/yaml compose/test/styling compose/test/static
 
 compose/test: compose/build
-	${DOCKER_COMPOSE} --profile testing run --rm algorithm-exercises-cpp-test make test
+	${DOCKER_COMPOSE} --profile testing run --rm algorithm-exercises-c-test make test
 
 compose/run: compose/build
-	${DOCKER_COMPOSE} --profile production run --rm algorithm-exercises-cpp ls -alhR
+	${DOCKER_COMPOSE} --profile production run --rm algorithm-exercises-c ls -alhR
 
 compose/all: compose/rebuild compose/test compose/lint
 

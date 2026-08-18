@@ -1,15 +1,16 @@
-ARG BASE_IMAGE_VERSION=ubuntu:26.04
-FROM ${BASE_IMAGE_VERSION} AS init
+FROM ubuntu:26.04 AS init
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
 ENV VCPKG_ROOT=/opt/vcpkg
 
 RUN apt-get -y update && \
-  apt-get -y install --no-install-recommends --no-install-suggests make && \
+  apt-get -y install --no-install-recommends --no-install-suggests ca-certificates make && \
   rm -rf /var/lib/apt/lists/*
 
 FROM init AS builder
+ARG GENERATE_ASM=0
+ENV GENERATE_ASM=${GENERATE_ASM}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
@@ -17,22 +18,25 @@ ENV TZ=Etc/UTC
 # build tools
 RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    build-essential ca-certificates curl g++ gcc gpg \
+    curl gpg lsb-release \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    build-essential g++ gcc gpg \
     lsb-release make pkg-config \
   # CMAKE from Kitware repository
   && curl --proto "=https" -fsSL https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null \
   | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg \
   && echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu $(lsb_release -cs) main" \
   > /etc/apt/sources.list.d/kitware.list \
+  && apt-get -y autoremove curl lsb-release gpg \
   && apt-get update \
   && apt-get install -y --no-install-recommends cmake \
   ## clean up
-  && apt-get -y autoremove curl lsb-release \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && make --version \
-  && cmake --version \
-  && g++ --version
+  && gcc --version \
+  && g++ --version \
+  && cmake --version
 
 # vcpkg Package Manager
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
@@ -42,7 +46,9 @@ ENV VCPKG_ROOT=/opt/vcpkg
 # vcpkg Package Manager
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
-  ca-certificates curl git ninja-build unzip zip \
+    curl \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    git ninja-build unzip zip \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir /opt/vcpkg \
   && git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" \
@@ -76,57 +82,26 @@ FROM builder AS development
 
 # CMD []
 
-FROM builder AS lint
+FROM init AS lint
 
+# Instala sólo lo mínimo necesario para linting (cmake, clang-format, cppcheck)
 RUN apt-get update && \
-  apt-get -y install --no-install-recommends --no-install-suggests gnupg software-properties-common && \
-  rm -rf /var/lib/apt/lists/*
-
-RUN apt-get -y update \
-  && apt-get -y install --no-install-recommends --no-install-suggests curl \
-  && mkdir -p /etc/apt/keyrings \
-  && curl -fsSL --proto "=https" https://apt.llvm.org/llvm-snapshot.gpg.key \
-    | gpg --dearmor -o /etc/apt/keyrings/llvm-snapshot.gpg \
-  && echo "deb [signed-by=/etc/apt/keyrings/llvm-snapshot.gpg] https://apt.llvm.org/resolute/ llvm-toolchain-resolute-22 main" \
-    | tee /etc/apt/sources.list.d/llvm.list \
-  && apt-get -y update \
-  && apt-get -y install --no-install-recommends --no-install-suggests clang-format-22 \
-  && update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-22) 100 \
-  && apt-get -y autoremove curl \
+  apt-get -y install --no-install-recommends --no-install-suggests \
+    clang-format cmake cppcheck \
   && rm -rf /var/lib/apt/lists/*
-
-ADD https://deb.nodesource.com/setup_26.x nodesource_setup.sh
-RUN bash nodesource_setup.sh && \
-  apt-get -y install --no-install-recommends --no-install-suggests nodejs && \
-  npm install -g --ignore-scripts markdownlint-cli@0.49.1 && \
-  apt-get -y install --no-install-recommends --no-install-suggests python3-minimal python3-pip && \
-  rm /usr/lib/python3.*/EXTERNALLY-MANAGED && \
-  apt-get -y install --no-install-recommends --no-install-suggests yamllint && \
-  apt-get -y install --no-install-recommends --no-install-suggests cppcheck && \
-  rm -rf /var/lib/apt/lists/*
 
 # Tooling test
 RUN clang-format --version && \
-  markdownlint --version && \
-  yamllint --version && \
-  cppcheck --version
+  cppcheck --version && \
+  cmake --version
 
-# Code source
+# Copia sólo lo necesario para ejecutar las comprobaciones
 COPY ./src ${WORKDIR}/src
-COPY ./vcpkg.json ${WORKDIR}/vcpkg.json
-COPY ./CMakeLists.txt ${WORKDIR}/CMakeLists.txt
-COPY ./CMakePresets.json ${WORKDIR}/CMakePresets.json
 COPY ./Makefile ${WORKDIR}/
+RUN mkdir -p "${WORKDIR}"/build
+COPY --from=builder ${WORKDIR}/build/compile_commands.json ${WORKDIR}/build/compile_commands.json
 
-# markdownlint conf
-COPY ./.markdownlint.json ${WORKDIR}/
-
-# yamllint conf
-COPY ./.yamllint ${WORKDIR}/
-COPY ./.yamlignore ${WORKDIR}/
-COPY ./.gitignore ${WORKDIR}/
-
-CMD ["make", "lint"]
+CMD ["make", "lint-no-deps"]
 
 FROM development AS testing
 
@@ -138,14 +113,13 @@ COPY --from=builder ${WORKDIR}/build ${WORKDIR}/
 
 CMD ["make", "test"]
 
-FROM ${BASE_IMAGE_VERSION} AS production
+FROM ubuntu:26.04 AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
 
-# COPY ./Makefile ${WORKDIR}/
 COPY --from=builder ${WORKDIR}/build/src/lib/exercises/*.a ${WORKDIR}/
 
 RUN useradd --user-group --system --create-home --no-log-init app

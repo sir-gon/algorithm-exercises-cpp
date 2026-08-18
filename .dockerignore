@@ -1,3 +1,6 @@
+.cache
 .git
+.vscode
 build
+coverage
 vcpkg_installed
