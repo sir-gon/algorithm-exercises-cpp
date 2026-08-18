@@ -9,6 +9,8 @@ RUN apt-get -y update && \
   rm -rf /var/lib/apt/lists/*
 
 FROM init AS builder
+ARG GENERATE_ASM=0
+ENV GENERATE_ASM=${GENERATE_ASM}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
