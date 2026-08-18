@@ -5,7 +5,7 @@ WORKDIR ${WORKDIR}
 ENV VCPKG_ROOT=/opt/vcpkg
 
 RUN apt-get -y update && \
-  apt-get -y install --no-install-recommends --no-install-suggests make && \
+  apt-get -y install --no-install-recommends --no-install-suggests ca-certificates make && \
   rm -rf /var/lib/apt/lists/*
 
 FROM init AS builder
@@ -16,7 +16,9 @@ ENV TZ=Etc/UTC
 # build tools
 RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    build-essential ca-certificates curl g++ gcc gpg \
+    curl gpg lsb-release \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    build-essential g++ gcc gpg \
     lsb-release make pkg-config \
   # CMAKE from Kitware repository
   && curl --proto "=https" -fsSL https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null \
@@ -42,7 +44,9 @@ ENV VCPKG_ROOT=/opt/vcpkg
 # vcpkg Package Manager
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
-  ca-certificates curl git ninja-build unzip zip \
+    curl \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    git ninja-build unzip zip \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir /opt/vcpkg \
   && git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" \
@@ -76,44 +80,26 @@ FROM builder AS development
 
 # CMD []
 
-FROM builder AS lint
+FROM init AS lint
 
+# Instala sólo lo mínimo necesario para linting (cmake, clang-format, cppcheck)
 RUN apt-get update && \
-  apt-get -y install --no-install-recommends --no-install-suggests gnupg software-properties-common && \
-  rm -rf /var/lib/apt/lists/*
-
-RUN apt-get -y update \
-  && apt-get -y install --no-install-recommends --no-install-suggests curl \
-  && mkdir -p /etc/apt/keyrings \
-  && curl -fsSL --proto "=https" https://apt.llvm.org/llvm-snapshot.gpg.key \
-    | gpg --dearmor -o /etc/apt/keyrings/llvm-snapshot.gpg \
-  && echo "deb [signed-by=/etc/apt/keyrings/llvm-snapshot.gpg] https://apt.llvm.org/resolute/ llvm-toolchain-resolute-22 main" \
-    | tee /etc/apt/sources.list.d/llvm.list \
-  && apt-get -y update \
-  && apt-get -y install --no-install-recommends --no-install-suggests clang-format-22 \
-  && update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-22) 100 \
-  && apt-get -y autoremove curl \
+  apt-get -y install --no-install-recommends --no-install-suggests \
+    clang-format cmake cppcheck \
   && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get -y update && \
-  apt-get -y install --no-install-recommends --no-install-suggests cppcheck && \
-  rm -rf /var/lib/apt/lists/*
 
 # Tooling test
 RUN clang-format --version && \
-  cppcheck --version
+  cppcheck --version && \
+  cmake --version
 
-# Code source
+# Copia sólo lo necesario para ejecutar las comprobaciones
 COPY ./src ${WORKDIR}/src
-COPY ./vcpkg.json ${WORKDIR}/vcpkg.json
-COPY ./CMakeLists.txt ${WORKDIR}/CMakeLists.txt
-COPY ./CMakePresets.json ${WORKDIR}/CMakePresets.json
 COPY ./Makefile ${WORKDIR}/
+RUN mkdir -p "${WORKDIR}"/build
+COPY --from=builder ${WORKDIR}/build/compile_commands.json ${WORKDIR}/build/compile_commands.json
 
-# Ignored files
-COPY ./.gitignore ${WORKDIR}/
-
-CMD ["make", "lint"]
+CMD ["make", "lint-no-deps"]
 
 FROM development AS testing
 
