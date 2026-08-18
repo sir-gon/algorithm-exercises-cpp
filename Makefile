@@ -81,9 +81,11 @@ lint/markdown:
 	&& echo '✔  Your code looks good.'
 
 lint/yaml:
-	yamllint --stric . && echo '✔  Your code looks good.'
+	yamllint --strict . && echo '✔  Your code looks good.'
 
-lint: lint/markdown lint/yaml test/styling test/static
+lint: test/styling test/static
+
+lint/all: lint/markdown lint/yaml test/styling test/static
 
 test/static: prebuild
 	cppcheck \
