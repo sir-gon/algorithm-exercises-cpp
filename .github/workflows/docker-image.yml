@@ -128,7 +128,7 @@ jobs:
           docker
           compose --profile lint
           run --rm ${{ env.IMAGE_NAME }}-lint
-          make lint
+          make lint-no-deps
 
   run-test:
     name: "Run in docker: TEST"
