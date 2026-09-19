@@ -180,7 +180,9 @@ compose/test/styling: compose/build
 compose/test/static: compose/build
 	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-c-lint make test/static-no-deps
 
-compose/lint: compose/lint/markdown compose/lint/yaml compose/test/styling compose/test/static
+compose/lint: compose/test/styling compose/test/static
+
+compose/lint/all: compose/lint/markdown compose/lint/yaml compose/lint/json compose/test/styling compose/test/static
 
 compose/test: compose/build
 	${DOCKER_COMPOSE} --profile testing run --rm algorithm-exercises-c-test make test
