@@ -10,7 +10,7 @@ services:
       BRUTEFORCE: ${BRUTEFORCE:-false} ## (1) ## true | false
     volumes:
       - ./coverage:/app/coverage
-    profiles: ["testing"]
+    profiles: ['testing']
 
   algorithm-exercises-cpp-lint:
     image: algorithm-exercises-cpp:lint
@@ -21,21 +21,28 @@ services:
       - ./.clang-format:/app/.clang-format
       - ./Makefile:/app/Makefile
       - ./src:/app/src
-    profiles: ["lint"]
+    profiles: ['lint']
 
   markdownlint:
     image: goncl/markdownlint-cli:latest
     working_dir: /workspace
     volumes:
       - ./:/workspace
-    profiles: ["lint"]
+    profiles: ['lint']
 
   yamllint:
     image: goncl/yamllint:latest
     working_dir: /workspace
     volumes:
       - ./:/workspace
-    profiles: ["lint"]
+    profiles: ['lint']
+
+  prettier:
+    image: goncl/prettier:3.9.8
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+    profiles: ['lint']
 
   algorithm-exercises-cpp-dev:
     image: algorithm-exercises-cpp:dev
@@ -47,7 +54,7 @@ services:
       BRUTEFORCE: ${BRUTEFORCE:-false} ## (1) ## true | false
     volumes:
       - ./:/app
-    profiles: ["development"]
+    profiles: ['development']
 
   algorithm-exercises-cpp:
     image: algorithm-exercises-cpp:latest
@@ -56,7 +63,7 @@ services:
       target: production
     # volumes:
     #   - ./:/app
-    profiles: ["production"]
+    profiles: ['production']
 
 ## REFERENCES:
 ## (1) Passing Environment variable with fallback value:
