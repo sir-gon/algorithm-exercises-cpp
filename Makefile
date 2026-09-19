@@ -84,10 +84,13 @@ lint/markdown:
 lint/yaml:
 	yamllint --strict . && echo '✔  Your code looks good.'
 
+lint/json:
+	prettier --check ./src/**/*.json
+
 lint: test/styling test/static
 lint-no-deps: test/styling test/static-no-deps
 
-lint/all: lint/markdown lint/yaml test/styling test/static
+lint/all: lint/markdown lint/yaml lint/json test/styling test/static
 
 test/static-no-deps:
 	cppcheck \
@@ -107,8 +110,13 @@ test/static: prebuild test/static-no-deps
 test/styling:
 	clang-format --dry-run --Werror $(FILES)
 
-format:
+format/sources:
 	clang-format -i --verbose $(FILES)
+
+format/json:
+	prettier --write ./src/**/*.json
+
+format: format/sources format/json
 
 test: env dependencies build clean/test
 	cd build && make test
@@ -152,12 +160,18 @@ compose/lint/markdown:
     markdownlint --config /workspace/.markdownlint.json '/workspace/**/*.md' \
 		&& echo '✔  Your code looks good.'
 
-
 compose/lint/yaml:
 	${DOCKER_COMPOSE} --profile lint run --rm \
     --workdir /workspace \
     -v "$$(pwd):/workspace" \
     yamllint --strict /workspace \
+		&& echo '✔  Your code looks good.'
+
+compose/lint/json:
+	${DOCKER_COMPOSE} --profile lint run --rm \
+    --workdir /workspace \
+    -v "$$(pwd):/workspace" \
+    prettier --check /workspace/**/*.json \
 		&& echo '✔  Your code looks good.'
 
 compose/test/styling: compose/build
