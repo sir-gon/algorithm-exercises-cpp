@@ -121,6 +121,9 @@ format: format/sources format/json
 test: env dependencies build clean/test
 	cd build && make test
 
+test-no-deps:
+	cd build && make test
+
 coverage: test
 	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info \
 		--no-external --capture \
@@ -175,20 +178,20 @@ compose/lint/json:
 		&& echo '✔  Your code looks good.'
 
 compose/test/styling: compose/build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-c-lint make test/styling
+	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make test/styling
 
 compose/test/static: compose/build
-	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-c-lint make test/static-no-deps
+	${DOCKER_COMPOSE} --profile lint run --rm algorithm-exercises-cpp-lint make test/static-no-deps
 
 compose/lint: compose/test/styling compose/test/static
 
 compose/lint/all: compose/lint/markdown compose/lint/yaml compose/lint/json compose/test/styling compose/test/static
 
-compose/test: compose/build
-	${DOCKER_COMPOSE} --profile testing run --rm algorithm-exercises-c-test make test
+compose/test:
+	${DOCKER_COMPOSE} --profile testing run --rm algorithm-exercises-cpp-test make test-no-deps
 
 compose/run: compose/build
-	${DOCKER_COMPOSE} --profile production run --rm algorithm-exercises-c ls -alhR
+	${DOCKER_COMPOSE} --profile production run --rm algorithm-exercises-cpp ls -alhR
 
 compose/all: compose/rebuild compose/test compose/lint
 
