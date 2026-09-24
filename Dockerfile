@@ -17,11 +17,11 @@ COPY ./Makefile ${WORKDIR}/
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    ## add ephemeral packages
-    "curl=8.18.0-1ubuntu2.5" \
-    "gpg=2.4.8-4ubuntu3.1" \
-    ## common permanent packages
+  ## common permanent packages
     "ca-certificates=20260601~26.04.1" \
+  ## add ephemeral packages
+    "curl=8.18.0-1ubuntu2.7" \
+    "gpg=2.4.8-4ubuntu3.1" \
   # CMAKE from Kitware repository
   && curl --proto "=https" -fsSL https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null \
   | gpg --dearmor -o /usr/share/keyrings/kitware-archive-keyring.gpg \
@@ -66,12 +66,12 @@ ENV VCPKG_ROOT=/opt/vcpkg
 # vcpkg Package Manager
 RUN apt-get -y update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    "curl=8.18.0-1ubuntu2.5" \
+    "curl=8.18.0-1ubuntu2.7" \
     "git=1:2.53.0-1ubuntu1" \
     "ninja-build=1.13.2-1" \
+    "patchelf=0.18.0-1.4build1" \
     "unzip=6.0-29ubuntu1" \
     "zip=3.0-15ubuntu3" \
-    "patchelf=0.18.0-1.4build1" \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir /opt/vcpkg \
   && git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" \
