@@ -14,9 +14,25 @@ env:
   ARTIFACT_NAME: algorithm-exercises-cpp_${{ github.sha }}
 
 jobs:
-  build-lint:
-    name: "Build Docker LINT image"
+  setup:
+    name: "Setup matrix"
     runs-on: ubuntu-26.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Set base images matrix
+        id: set-matrix
+        run: |
+          echo 'matrix={"base_image":["alpine","debian","ubuntu"]}' \
+            >> "$GITHUB_OUTPUT"
+
+  build-lint:
+    name: "Build Docker LINT image (${{ matrix.base_image }})"
+    runs-on: ubuntu-26.04
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -27,19 +43,26 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          file: Dockerfile.${{ matrix.base_image }}
           target: lint
-          outputs: |
-            type=docker,dest=/tmp/${{ env.ARTIFACT_NAME }}_lint.tar
+          outputs:
+            # yamllint disable-line rule:line-length
+            type=docker,dest=/tmp/${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_lint.tar
           tags: |
-            ${{ env.IMAGE_NAME }}:lint
+            ${{ env.IMAGE_NAME }}-${{ matrix.base_image }}:lint
       - name: "LINT: Upload artifact"
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.ARTIFACT_NAME }}_lint
-          path: /tmp/${{ env.ARTIFACT_NAME }}_lint.tar
+          name: ${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_lint
+          path: /tmp/${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_lint.tar
+
   build-test:
-    name: "Build Docker TEST image"
+    name: "Build Docker TEST image (${{ matrix.base_image }})"
     runs-on: ubuntu-26.04
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -50,20 +73,26 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          file: Dockerfile.${{ matrix.base_image }}
           target: testing
-          outputs: |
-            type=docker,dest=/tmp/${{ env.ARTIFACT_NAME }}_test.tar
+          outputs:
+            # yamllint disable-line rule:line-length
+            type=docker,dest=/tmp/${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_test.tar
           tags: |
-            ${{ env.IMAGE_NAME }}:test
+            ${{ env.IMAGE_NAME }}-${{ matrix.base_image }}:test
       - name: "TEST: Upload artifact"
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.ARTIFACT_NAME }}_test
-          path: /tmp/${{ env.ARTIFACT_NAME }}_test.tar
+          name: ${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_test
+          path: /tmp/${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_test.tar
 
   build-prod:
-    name: "Build Docker PRODUCTION image"
+    name: "Build Docker PRODUCTION image (${{ matrix.base_image }})"
     runs-on: ubuntu-26.04
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -73,17 +102,19 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          file: Dockerfile.${{ matrix.base_image }}
           target: production
-          outputs: |
-            type=docker,dest=/tmp/${{ env.ARTIFACT_NAME }}_prod.tar
+          outputs:
+            # yamllint disable-line rule:line-length
+            type=docker,dest=/tmp/${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_prod.tar
           tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest-${{ matrix.base_image }}
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.base_image }}
       - name: "PRODUCTION: Upload artifact"
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.ARTIFACT_NAME }}_prod
-          path: /tmp/${{ env.ARTIFACT_NAME }}_prod.tar
+          name: ${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_prod
+          path: /tmp/${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_prod.tar
 
   run-lint-markdown:
     name: "Run in docker: Markdown LINT"
@@ -116,53 +147,65 @@ jobs:
           make compose/lint/json
 
   run-lint:
-    name: "Run in docker: LINT"
+    name: "Run in docker: LINT (${{ matrix.base_image }})"
     runs-on: ubuntu-26.04
-    needs: build-lint
+    needs: [setup, build-lint]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{ env.ARTIFACT_NAME }}_lint
+          name: ${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_lint
           path: /tmp/
 
       - name: Load image
+        env:
+          # yamllint disable-line rule:line-length
+          ARTIFACT_FILE: "${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_lint.tar"
         run: |
-          docker load --input /tmp/${{ env.ARTIFACT_NAME }}_lint.tar
+          docker load --input /tmp/${{ env.ARTIFACT_FILE }}
           docker image ls -a
 
       - name: Run lint
+        env:
+          BASE_IMAGE: ${{ matrix.base_image }}
         run: >
           docker
-          compose --profile lint
-          run --rm ${{ env.IMAGE_NAME }}-lint
+          run --rm ${{ env.IMAGE_NAME }}-${{ matrix.base_image }}:lint
           make lint-no-deps
 
   run-test:
-    name: "Run in docker: TEST"
+    name: "Run in docker: TEST (${{ matrix.base_image }})"
     runs-on: ubuntu-26.04
-    needs: build-test
+    needs: [setup, build-test]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{ env.ARTIFACT_NAME }}_test
+          name: ${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_test
           path: /tmp/
 
       - name: Load image
+        env:
+          # yamllint disable-line rule:line-length
+          ARTIFACT_FILE: "${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_test.tar"
         run: |
-          docker load --input /tmp/${{ env.ARTIFACT_NAME }}_test.tar
+          docker load --input /tmp/${{ env.ARTIFACT_FILE }}
           docker image ls -a
 
       - name: Run test
         run: >
           docker
-          compose --profile test
-          run --rm ${{ env.IMAGE_NAME }}-test
+          run --rm ${{ env.IMAGE_NAME }}-${{ matrix.base_image }}:test
           make test-no-deps
 
   # yamllint disable rule:line-length
@@ -216,9 +259,12 @@ jobs:
   # yamllint enable rule:line-length
 
   scan:
-    name: "Trivy"
+    name: "Trivy (${{ matrix.base_image }})"
     runs-on: ubuntu-26.04
-    needs: build-prod
+    needs: [setup, build-prod]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
     permissions:
       actions: read
       contents: read
@@ -227,18 +273,22 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{ env.ARTIFACT_NAME }}_prod
+          name: ${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_prod
           path: /tmp/
 
       - name: Load image
+        env:
+          # yamllint disable-line rule:line-length
+          ARTIFACT_FILE: "${{ env.ARTIFACT_NAME }}_${{ matrix.base_image }}_prod.tar"
         run: |
-          docker load --input /tmp/${{ env.ARTIFACT_NAME }}_prod.tar
+          docker load --input /tmp/${{ env.ARTIFACT_FILE }}
           docker image ls -a
 
       - name: Run Trivy vulnerability scanner (cli report)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          # yamllint disable-line rule:line-length
+          image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.base_image }}
           format: "table"
         env:
           TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
@@ -246,13 +296,14 @@ jobs:
       - name: Run Trivy vulnerability scanner (sarif report)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          # yamllint disable-line rule:line-length
+          image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.base_image }}
           format: "sarif"
-          output: "trivy-results.sarif"
+          output: "trivy-results-${{ matrix.base_image }}.sarif"
         env:
           TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: "trivy-results.sarif"
+          sarif_file: "trivy-results-${{ matrix.base_image }}.sarif"
