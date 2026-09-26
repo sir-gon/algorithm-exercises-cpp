@@ -1,0 +1,160 @@
+FROM debian:stable-20260918-slim AS init
+
+ENV WORKDIR=/app
+WORKDIR ${WORKDIR}
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN apt-get update \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    ## common permanent packages
+    "make=4.4.1-2" \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY ./Makefile ${WORKDIR}/
+
+ARG CMAKE_VERSION=4.4.3
+
+RUN apt-get update \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+  ## common permanent packages
+    "ca-certificates=20250419" \
+  ## add ephemeral packages
+    "curl=8.14.1-2+deb13u5" \
+  # CMAKE from Kitware repository
+    && curl -fsSLH "Cache-Control: no-cache" --proto "=https" \
+        "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz" \
+        | tar -xz --strip-components=1 -C /usr/local \
+    && cmake --version \
+  ## remove ephemeral packages
+  && apt-get -y autoremove curl \
+  ## clean up
+  && rm -rf /var/lib/apt/lists/*
+
+FROM init AS builder
+
+ARG GENERATE_ASM=0
+ENV GENERATE_ASM=${GENERATE_ASM}
+
+# # build tools
+RUN apt-get update \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    "build-essential=12.12" \
+    "g++=4:14.2.0-1" \
+    "gcc=4:14.2.0-1" \
+    "pkg-config=1.8.1-4" \
+  ## clean up
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  ## test tools
+  && gcc --version \
+  && g++ --version \
+  && make --version \
+  && cmake --version
+
+# vcpkg Package Manager
+ENV VCPKG_FORCE_SYSTEM_BINARIES=1
+ENV VCPKG_VERSION=2026.07.29
+ENV VCPKG_ROOT=/opt/vcpkg
+
+# vcpkg Package Manager
+RUN apt-get -y update \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    "curl=8.14.1-2+deb13u5" \
+    "git=1:2.47.3-0+deb13u1" \
+    "ninja-build=1.12.1-1" \
+    "patchelf=0.18.0-1.4" \
+    "unzip=6.0-29+deb13u1" \
+    "zip=3.0-15+deb13u1" \
+  && rm -rf /var/lib/apt/lists/* \
+  && mkdir /opt/vcpkg \
+  && git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" \
+  && /opt/vcpkg/bootstrap-vcpkg.sh \
+  && ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg \
+  && rm -rf /var/lib/apt/lists/* \
+  && vcpkg version
+
+# sources
+COPY ./src ${WORKDIR}/src
+COPY ./vcpkg.json ${WORKDIR}/vcpkg.json
+COPY ./CMakeLists.txt ${WORKDIR}/CMakeLists.txt
+COPY ./CMakePresets.json ${WORKDIR}/CMakePresets.json
+COPY ./Makefile ${WORKDIR}/
+
+# dependencies
+RUN make dependencies
+
+LABEL vcpkg=enabled
+
+# build
+RUN ls -alhR && \
+  mkdir build && \
+  make build && \
+  ls -alhR
+
+CMD ["make", "build"]
+
+FROM builder AS development
+
+CMD []
+
+FROM init AS lint
+
+# Instala sólo lo mínimo necesario para linting (cmake, clang-format, cppcheck)
+RUN apt-get update && \
+  apt-get -y install --no-install-recommends --no-install-suggests \
+    "clang-format=1:19.0-63" \
+    "cppcheck=2.17.1-2" && \
+  rm -rf /var/lib/apt/lists/*
+
+LABEL lint-phase=enabled
+LABEL clang-format=enabled
+LABEL cppcheck=enabled
+
+# Tooling test
+RUN clang-format --version && \
+  cppcheck --version && \
+  make --version
+
+# Copia sólo lo necesario para ejecutar las comprobaciones
+COPY ./src ${WORKDIR}/src
+COPY ./Makefile ${WORKDIR}/
+RUN mkdir -p "${WORKDIR}"/build
+COPY --from=builder ${WORKDIR}/build/compile_commands.json ${WORKDIR}/build/compile_commands.json
+
+CMD ["make", "lint-no-deps"]
+
+FROM init AS testing
+
+RUN apt-get -y update && \
+  apt-get -y install --no-install-recommends --no-install-suggests \
+    "lcov=2.3.1-1" && \
+  rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder ${WORKDIR} ${WORKDIR}
+
+CMD ["make", "test-no-deps"]
+
+FROM debian:stable-20260918-slim AS production
+
+ENV LOG_LEVEL=INFO
+ENV BRUTEFORCE=false
+ENV WORKDIR=/app
+WORKDIR ${WORKDIR}
+
+RUN apt-get update \
+  && apt-get -y install --no-install-recommends --no-install-suggests \
+    ## common permanent packages
+    "make=4.4.1-2" \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder ${WORKDIR}/build/src/lib/exercises/*.a ${WORKDIR}/
+
+RUN useradd --uid 1001 --user-group --system --create-home --no-log-init app
+USER 1001
+
+RUN ls -alhR
+
+CMD ["make", "run"]

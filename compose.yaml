@@ -4,6 +4,7 @@ services:
     image: algorithm-exercises-cpp:test
     build:
       context: .
+      dockerfile: Dockerfile.${BASE_IMAGE:-alpine}
       target: testing
     environment:
       LOG_LEVEL: ${LOG_LEVEL:-info} ## (1) ## info | debug
@@ -16,6 +17,7 @@ services:
     image: algorithm-exercises-cpp:lint
     build:
       context: .
+      dockerfile: Dockerfile.${BASE_IMAGE:-alpine}
       target: lint
     volumes:
       - ./.clang-format:/app/.clang-format
@@ -48,6 +50,7 @@ services:
     image: algorithm-exercises-cpp:dev
     build:
       context: .
+      dockerfile: Dockerfile.${BASE_IMAGE:-alpine}
       target: development
     environment:
       LOG_LEVEL: ${LOG_LEVEL:-info} ## (1) ## info | debug
@@ -60,6 +63,7 @@ services:
     image: algorithm-exercises-cpp:latest
     build:
       context: .
+      dockerfile: Dockerfile.${BASE_IMAGE:-alpine}
       target: production
     # volumes:
     #   - ./:/app
