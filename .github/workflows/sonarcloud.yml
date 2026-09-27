@@ -1,6 +1,8 @@
 ---
 name: SonarCloud
 
+# yamllint disable rule:line-length
+
 on: # yamllint disable-line rule:truthy
   push:
     branches: ["main"]
@@ -19,7 +21,7 @@ jobs:
       # Directory where build-wrapper output will be placed
       BUILD_WRAPPER_OUT_DIR: build
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # Shallow clones should be disabled for a better relevancy of analysis
           fetch-depth: 0
@@ -48,17 +50,13 @@ jobs:
         run: |
           make dependencies
 
-      # yamllint disable rule:line-length
       - name: Install Build Wrapper
         uses: SonarSource/sonarqube-scan-action/install-build-wrapper@ba9859eae8dd6bd29e412f25ddbbef3d032000f4
-      # yamllint enable rule:line-length
 
-      # yamllint disable rule:line-length
       - name: Run build-wrapper
         run: |
           export VCPKG_ROOT=/usr/local/share/vcpkg
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make build
-      # yamllint enable rule:line-length
       - name: Run tests to generate coverage statistics
         run: |
           make coverage
@@ -67,7 +65,6 @@ jobs:
         run: |
           gcovr -e "src/tests/*" --sonarqube > coverage.xml
 
-      # yamllint disable rule:line-length
       - name: Analyze with SonarQube / SonarCloud
         uses: SonarSource/sonarqube-scan-action@ba9859eae8dd6bd29e412f25ddbbef3d032000f4
         env:
@@ -77,4 +74,3 @@ jobs:
           args: >
             --define sonar.cfamily.compile-commands=${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json
             --define sonar.coverageReportPaths=coverage.xml
-      # yamllint enable rule:line-length
