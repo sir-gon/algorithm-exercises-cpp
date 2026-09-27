@@ -12,6 +12,9 @@ on: # yamllint disable-line rule:truthy
 env:
   VCPKG_VERSION: 2026.07.29
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: C/C++ CMake CI Test

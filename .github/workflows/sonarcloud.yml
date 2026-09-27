@@ -8,6 +8,9 @@ on: # yamllint disable-line rule:truthy
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: SonarCloud build and run sonar-scanner
@@ -23,8 +26,7 @@ jobs:
       - name: Install Tools
         run: |
           sudo rm /usr/lib/python3.*/EXTERNALLY-MANAGED
-          pip install gcovr
-          #
+          pip install --only-binary :all: gcovr==8.6
           # Install lcov dependencies
           sudo apt-get install libcapture-tiny-perl libdatetime-perl
           # Install lcov from source
