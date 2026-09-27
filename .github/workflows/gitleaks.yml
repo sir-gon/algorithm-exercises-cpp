@@ -1,5 +1,4 @@
 ---
-
 name: gitleaks
 
 on: # yamllint disable-line rule:truthy
@@ -17,6 +16,10 @@ on: # yamllint disable-line rule:truthy
     #        │  │ │ │ │
     #        *  * * * *
     - cron: "0 6 * * *" # run once a day at 6 AM
+
+permissions:
+  contents: read
+
 jobs:
   scan:
     name: gitleaks

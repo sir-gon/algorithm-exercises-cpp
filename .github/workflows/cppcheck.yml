@@ -1,5 +1,4 @@
 ---
-
 name: CppCheck Lint
 
 on: # yamllint disable-line rule:truthy
@@ -9,6 +8,9 @@ on: # yamllint disable-line rule:truthy
     # The branches below must be a subset of the branches above
     branches: ["main"]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   lint:
