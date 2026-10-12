@@ -2,4 +2,4 @@
 
 ## Reporting a Vulnerability
 
-[Report here](https://github.com/sir-gon/algorithm-exercises-c/security/advisories/new)
+[Report here](https://github.com/sir-gon/algorithm-exercises-cpp/security/advisories/new)
