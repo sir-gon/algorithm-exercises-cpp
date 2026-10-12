@@ -7,6 +7,7 @@
 [![CppCheck Lint](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cppcheck.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/cppcheck.yml)
 [![Markdown Lint](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/markdown-lint.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/markdown-lint.yml)
 [![YAML lint](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/yamllint.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/yamllint.yml)
+[![JSON Prettier lint](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/prettier-json.yml/badge.svg)](https://github.com/sir-gon/algorithm-exercises-cpp/actions/workflows/prettier-json.yml)
 
 ![GitHub](https://img.shields.io/github/license/sir-gon/algorithm-exercises-cpp)
 ![GitHub language count](https://img.shields.io/github/languages/count/sir-gon/algorithm-exercises-cpp)
@@ -19,6 +20,8 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sir-gon_algorithm-exercises-cpp&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sir-gon_algorithm-exercises-cpp)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sir-gon_algorithm-exercises-cpp&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sir-gon_algorithm-exercises-cpp)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sir-gon_algorithm-exercises-cpp&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sir-gon_algorithm-exercises-cpp)
+
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15400/badge)](https://www.bestpractices.dev/projects/15400)
 
 ## TL;DR
 
