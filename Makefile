@@ -24,7 +24,7 @@ BUILDKIT_PROGRESS=plain
 DOCKER_COMPOSE=docker compose
 
 # TOOLS
-COVERAGE_TOOL_OPTS=--config-file .lcovrc --ignore-errors empty --ignore-errors inconsistent
+COVERAGE_TOOL_OPTS=--root . --filter 'src/lib/*' --exclude "tests/*" --exclude 'build/*' --txt --txt-metric line --txt-metric branch --print-summary
 
 # C++ specific
 SRC_DIR = src
@@ -125,14 +125,14 @@ test-no-deps:
 	cd build && make test
 
 coverage: test
-	lcov ${COVERAGE_TOOL_OPTS} -o coverage/lcov.info \
-		--no-external --capture \
-		--exclude "build/vcpkg_installed" \
-		--exclude "tests/*" \
-		--directory .
+	gcovr ${COVERAGE_TOOL_OPTS} \
+		--lcov coverage/coverage.lcov \
+		--sonarqube coverage/coverage.xml
 
-coverage/html: coverage
-	genhtml ${COVERAGE_TOOL_OPTS} -o coverage/ --show-details --legend coverage/lcov.info
+coverage/html: test
+	gcovr ${COVERAGE_TOOL_OPTS} \
+		--html-details coverage/index.html
+
 	@if [ "$$(uname)" = "Darwin" ]; then \
 		open coverage/index.html; \
 	elif [ "$$(uname | tr '[:upper:]' '[:lower:]')" = "mingw32" ] || [ "$$(uname | tr '[:upper:]' '[:lower:]')" = "mingw64" ] || [ "$$(uname | tr '[:upper:]' '[:lower:]')" = "cygwin" ]; then \
