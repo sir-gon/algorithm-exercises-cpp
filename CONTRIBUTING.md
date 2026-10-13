@@ -7,13 +7,13 @@ how you can contribute and explain how we accept contribution.
 
 ## Reporting issues
 
-Please use [the repository issue tracker](https://github.com/sir-gon/algorithm-exercises-c/issues)
+Please use [the repository issue tracker](https://github.com/sir-gon/algorithm-exercises-cpp/issues)
 to report any issues..
 
 ## Providing feedback or suggestions
 
 Similarly to bug reports, we accept improvement suggestions and feedback via
-[the repository issue tracker](https://github.com/sir-gon/algorithm-exercises-c/issues).
+[the repository issue tracker](https://github.com/sir-gon/algorithm-exercises-cpp/issues).
 
 ## Contributing code changes
 
