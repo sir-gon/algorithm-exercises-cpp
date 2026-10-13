@@ -21,8 +21,19 @@ target_include_directories(test_tools PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # Functionality to test.
 target_link_libraries(unit-tests_combined PRIVATE exercises)
 
-target_link_libraries(unit-tests_combined PRIVATE test_tools)
 target_link_libraries(test_tools PUBLIC nlohmann_json::nlohmann_json)
+
+# Rule of thumb:
+# any static helper library that contributes symbols used by the final executable
+# must be linked into that final executable, not just into a previous static step.
+# On GNU ld, __wrap_malloc requires the final executable to receive both the
+# wrapper flag and the helper library object; on Apple, the equivalent is
+# force-loading the static library into the final link.
+target_link_libraries(unit-tests_combined PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,test_tools>")
+
+if(UNIX AND NOT APPLE)
+  target_link_options(unit-tests_combined PRIVATE "-Wl,--wrap=malloc")
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(CTest)
