@@ -28,8 +28,7 @@ jobs:
 
       - name: Install Tools
         run: |
-          sudo apt-get update
-          sudo apt-get install lcov
+          pip install --only-binary :all: gcovr==8.6
 
       - name: Check Tools
         run: |
@@ -42,7 +41,7 @@ jobs:
           echo "-----------"
           vcpkg --version
           echo "-----------"
-          lcov --version
+          gcovr --version
 
       - name: Install dependencies
         run: |
