@@ -37,7 +37,7 @@ std::vector<std::string> plusMinusCalculate(const std::vector<int> &arr) {
     }
   }
 
-  std::vector<double> results = {
+  std::vector results = {
       static_cast<double>(positives) / static_cast<double>(arr.size()),
       static_cast<double>(negatives) / static_cast<double>(arr.size()),
       static_cast<double>(zeros) / static_cast<double>(arr.size())};
