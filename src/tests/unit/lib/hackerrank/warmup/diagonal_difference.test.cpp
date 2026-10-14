@@ -11,12 +11,10 @@ using json = nlohmann::json;
 
 TEST_CASE("diagonalDifference JSON Test Cases",
           "[hackerrank] [jsontestcase] [warmup]") {
-  std::filesystem::path cwd = std::filesystem::current_path();
-  std::string path =
-      cwd.string() +
-      "/unit/lib/hackerrank/warmup/diagonal_difference.testcases.json";
+  std::filesystem::path path = std::filesystem::path(__FILE__).parent_path() /
+                               "diagonal_difference.testcases.json";
 
-  INFO("diagonalDifference JSON test cases FILE: " << path);
+  INFO("diagonalDifference JSON test cases FILE: " << path.string());
 
   std::ifstream f(path);
   json data = json::parse(f);

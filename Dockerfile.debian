@@ -9,8 +9,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    ## common permanent packages
-    "make=4.4.1-2" \
+  ## common permanent packages
+  "make=4.4.1-2" \
   && rm -rf /var/lib/apt/lists/*
 
 COPY ./Makefile ${WORKDIR}/
@@ -20,14 +20,14 @@ ARG CMAKE_VERSION=4.4.3
 RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
   ## common permanent packages
-    "ca-certificates=20250419" \
+  "ca-certificates=20250419" \
   ## add ephemeral packages
-    "curl=8.14.1-2+deb13u5" \
+  "curl=8.14.1-2+deb13u7" \
   # CMAKE from Kitware repository
-    && curl -fsSLH "Cache-Control: no-cache" --proto "=https" \
-        "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz" \
-        | tar -xz --strip-components=1 -C /usr/local \
-    && cmake --version \
+  && curl -fsSLH "Cache-Control: no-cache" --proto "=https" \
+  "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz" \
+  | tar -xz --strip-components=1 -C /usr/local \
+  && cmake --version \
   ## remove ephemeral packages
   && apt-get -y autoremove curl \
   ## clean up
@@ -41,10 +41,10 @@ ENV GENERATE_ASM=${GENERATE_ASM}
 # # build tools
 RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    "build-essential=12.12" \
-    "g++=4:14.2.0-1" \
-    "gcc=4:14.2.0-1" \
-    "pkg-config=1.8.1-4" \
+  "build-essential=12.12" \
+  "g++=4:14.2.0-1" \
+  "gcc=4:14.2.0-1" \
+  "pkg-config=1.8.1-4" \
   ## clean up
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
@@ -62,12 +62,12 @@ ENV VCPKG_ROOT=/opt/vcpkg
 # vcpkg Package Manager
 RUN apt-get -y update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    "curl=8.14.1-2+deb13u5" \
-    "git=1:2.47.3-0+deb13u1" \
-    "ninja-build=1.12.1-1" \
-    "patchelf=0.18.0-1.4" \
-    "unzip=6.0-29+deb13u1" \
-    "zip=3.0-15+deb13u1" \
+  "curl=8.14.1-2+deb13u7" \
+  "git=1:2.47.3-0+deb13u1" \
+  "ninja-build=1.12.1-1" \
+  "patchelf=0.18.0-1.4" \
+  "unzip=6.0-29+deb13u1" \
+  "zip=3.0-15+deb13u1" \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir /opt/vcpkg \
   && git clone --branch "${VCPKG_VERSION}" https://github.com/microsoft/vcpkg "${VCPKG_ROOT}" \
@@ -105,8 +105,8 @@ FROM init AS lint
 # Instala sólo lo mínimo necesario para linting (cmake, clang-format, cppcheck)
 RUN apt-get update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
-    "clang-format=1:19.0-63" \
-    "cppcheck=2.17.1-2" && \
+  "clang-format=1:19.0-63" \
+  "cppcheck=2.17.1-2" && \
   rm -rf /var/lib/apt/lists/*
 
 LABEL lint-phase=enabled
@@ -130,7 +130,7 @@ FROM init AS testing
 
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
-    "lcov=2.3.1-1" && \
+  "lcov=2.3.1-1" && \
   rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder ${WORKDIR} ${WORKDIR}
@@ -146,8 +146,8 @@ WORKDIR ${WORKDIR}
 
 RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
-    ## common permanent packages
-    "make=4.4.1-2" \
+  ## common permanent packages
+  "make=4.4.1-2" \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder ${WORKDIR}/build/src/lib/exercises/*.a ${WORKDIR}/

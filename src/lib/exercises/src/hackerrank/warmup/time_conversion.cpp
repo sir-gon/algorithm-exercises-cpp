@@ -41,13 +41,7 @@ std::string timeConversion(const std::string &s) {
   int hour;
   hour_str >> hour;
 
-  if (hour < 0 || hour > 23) {
-    throw std::invalid_argument("Invalid hour value: " + std::to_string(hour));
-  }
-
-  if (hour >= 12) {
-    hour = 0;
-  }
+  hour = hour % 12;
 
   if (meridian.compare("PM") == 0) {
     hour += 12;
