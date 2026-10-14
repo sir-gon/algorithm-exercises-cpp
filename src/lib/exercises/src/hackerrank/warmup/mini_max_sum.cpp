@@ -14,9 +14,7 @@
 namespace hackerrank::warmup {
 std::string miniMaxSumCalculate(const std::vector<int> &arr) {
   if (arr.size() < 2) {
-    // GCOVR_EXCL_START
     throw std::invalid_argument("List too short. Pass at least 2 elements.");
-    // GCOVR_EXCL_STOP
   }
 
   long long tsum = 0;
@@ -31,17 +29,13 @@ std::string miniMaxSumCalculate(const std::vector<int> &arr) {
   }
 
   std::stringstream result;
+  result << tsum - tmax << " " << tsum - tmin;
 
-  result << tsum - tmax << " " << tsum - tmin; // GCOVR_EXCL_BR_WITHOUT_HIT: 3/6
-
-  return result.str(); // GCOVR_EXCL_BR_WITHOUT_HIT: 1/2
+  return result.str();
 }
 
 void miniMaxSum(const std::vector<int> &arr) {
-  const auto result = miniMaxSumCalculate(arr);
-  // GCOVR_EXCL_START
-  std::cout << result << std::endl;
-  // GCOVR_EXCL_STOP
+  std::cout << miniMaxSumCalculate(arr) << std::endl;
 }
 
 } // namespace hackerrank::warmup

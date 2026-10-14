@@ -10,7 +10,7 @@ namespace hackerrank::warmup {
 
 std::vector<int> compareTriplets(const std::vector<int> &a,
                                  const std::vector<int> &b) {
-  std::vector awards = {0, 0};
+  std::vector<int> awards = {0, 0};
 
   int i = 0;
   for (const int &value : a) {
@@ -24,6 +24,6 @@ std::vector<int> compareTriplets(const std::vector<int> &a,
     i += 1;
   }
   return awards;
-} // GCOVR_EXCL_BR_WITHOUT_HIT: 1/2
+}
 
 } // namespace hackerrank::warmup
