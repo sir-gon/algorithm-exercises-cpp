@@ -27,7 +27,6 @@ std::string timeConversion(const std::string &s) {
   char TIME_SEPARATOR = ':';
   std::string meridian = lastN(s, 2);
 
-  // GCOVR_EXCL_START
   auto time_str = std::stringstream(firstN(s, s.size() - 2));
   std::string segment;
   std::vector<std::string> time;
@@ -41,12 +40,9 @@ std::string timeConversion(const std::string &s) {
 
   int hour;
   hour_str >> hour;
-  // GCOVR_EXCL_STOP
 
   if (hour < 0 || hour > 23) {
-    // GCOVR_EXCL_START
     throw std::invalid_argument("Invalid hour value: " + std::to_string(hour));
-    // GCOVR_EXCL_STOP
   }
 
   if (hour >= 12) {
@@ -57,25 +53,23 @@ std::string timeConversion(const std::string &s) {
     hour += 12;
   }
 
-  // GCOVR_EXCL_START
   hour_str.str("");
   hour_str.clear();
 
   hour_str << std::setfill('0') << std::setw(2) << (hour % 24);
 
   time[0] = hour_str.str();
-  // GCOVR_EXCL_STOP
 
   std::string conversion;
   unsigned long tsize = time.size();
   for (int i = 0; i < tsize; i++) {
-    conversion += time[i]; // GCOVR_EXCL_BR_WITHOUT_HIT: 1/2
+    conversion += time[i];
     if (i < tsize - 1) {
-      conversion += ":"; // GCOVR_EXCL_BR_WITHOUT_HIT: 1/2
+      conversion += ":";
     }
   }
 
   return conversion;
-} // GCOVR_EXCL_BR_WITHOUT_HIT: 1/2
+}
 
 } // namespace hackerrank::warmup

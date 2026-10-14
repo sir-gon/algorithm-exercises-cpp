@@ -11,9 +11,7 @@ namespace hackerrank::projecteuler {
 
 long prime_factor(long n) {
   if (n < 2) {
-    // GCOVR_EXCL_START
     throw std::invalid_argument("n must be greater than 2");
-    // GCOVR_EXCL_STOP
   }
 
   long divisor = n;
