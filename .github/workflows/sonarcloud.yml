@@ -32,13 +32,19 @@ jobs:
       - name: Check Tools
         run: |
           echo "-----------"
-          c++ --version
+          cc --version
+          echo "-----------"
+          gcc --version
+          echo "-----------"
+          g++ --version
           echo "-----------"
           make --version
           echo "-----------"
           cmake --version
           echo "-----------"
           vcpkg --version
+          echo "-----------"
+          gcov --version
           echo "-----------"
           gcovr --version
 
@@ -56,7 +62,7 @@ jobs:
 
       - name: Make coverage report
         run: |
-          make coverage
+          make coverage/test
 
       - name: Analyze with SonarQube / SonarCloud
         uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9
