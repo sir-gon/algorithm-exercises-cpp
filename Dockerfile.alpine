@@ -1,6 +1,6 @@
 FROM alpine:3.24 AS init
 
-ENV WORKDIR=/app
+ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -118,7 +118,7 @@ RUN apk --update add --no-cache \
   # libasan required (AdressSanitizer)
   "gcc=15.2.0-r5" \
   # coverage
-  "lcov=2.3.1-r1" \
+  "gcovr=8.6-r1" \
   # runtime required libraries
   "libgcc=15.2.0-r5" \
   "libstdc++=15.2.0-r5"
@@ -132,13 +132,13 @@ FROM alpine:3.24 AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
-ENV WORKDIR=/app
+ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
 
 COPY --from=builder ${WORKDIR}/build/src/lib/exercises/*.a ${WORKDIR}/
 
 RUN addgroup -S -g 1001 app \
-  && adduser -S -u 1001 -G app -h /home/app app
+  && adduser -S -u 1001 -G app -h /home/workspace app
 USER 1001
 
 RUN ls -alhR

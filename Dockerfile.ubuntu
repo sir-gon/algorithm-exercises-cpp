@@ -1,6 +1,6 @@
 FROM ubuntu:26.04 AS init
 
-ENV WORKDIR=/app
+ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -10,6 +10,7 @@ RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
   ## common permanent packages
   "make=4.4.1-3" \
+  "gcc=4:15.2.0-5ubuntu1" \
   && rm -rf /var/lib/apt/lists/*
 
 COPY ./Makefile ${WORKDIR}/
@@ -47,7 +48,6 @@ RUN apt-get update \
   && apt-get -y install --no-install-recommends --no-install-suggests \
   "build-essential=12.12ubuntu2.26.04.2" \
   "g++=4:15.2.0-5ubuntu1" \
-  "gcc=4:15.2.0-5ubuntu1" \
   "pkg-config=2.5.1-4" \
   ## clean up
   && apt-get clean \
@@ -134,8 +134,11 @@ FROM init AS testing
 
 RUN apt-get -y update && \
   apt-get -y install --no-install-recommends --no-install-suggests \
-  "lcov=2.4-3" && \
-  rm -rf /var/lib/apt/lists/*
+  "libasan8=16-20260322-1ubuntu1" \
+  "python3-minimal=3.14.3-0ubuntu2" \
+  "python3-pip=25.1.1+dfsg-1ubuntu2" \
+  && rm -rf /var/lib/apt/lists/* \
+  && pip3 install --break-system-packages --no-cache-dir --only-binary :all: gcovr==8.6
 
 COPY --from=builder ${WORKDIR} ${WORKDIR}
 
@@ -145,7 +148,7 @@ FROM ubuntu:26.04 AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
-ENV WORKDIR=/app
+ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
 
 RUN apt-get update \

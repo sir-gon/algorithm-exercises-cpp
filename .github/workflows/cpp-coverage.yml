@@ -33,6 +33,8 @@ jobs:
       - name: Check Tools
         run: |
           echo "-----------"
+          gcc --version
+          echo "-----------"
           g++ --version
           echo "-----------"
           make --version
@@ -41,18 +43,18 @@ jobs:
           echo "-----------"
           vcpkg --version
           echo "-----------"
+          gcov --version
+          echo "-----------"
           gcovr --version
 
       - name: Install dependencies
-        run: |
-          make dependencies
+        run: make dependencies
 
       - name: Build
-        run: |
-          make build
+        run: make build
 
       - name: Test / Coverage
-        run: make coverage
+        run: make coverage/test
 
       # yamllint disable rule:line-length
       - name: Upload coverage reports to Codecov with GitHub Action
