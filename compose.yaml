@@ -10,7 +10,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-info} ## (1) ## info | debug
       BRUTEFORCE: ${BRUTEFORCE:-false} ## (1) ## true | false
     volumes:
-      - ./coverage:/app/coverage
+      - ./coverage:/workspace/coverage
     profiles: ['testing']
 
   algorithm-exercises-cpp-lint:
@@ -20,9 +20,9 @@ services:
       dockerfile: Dockerfile.${BASE_IMAGE:-alpine}
       target: lint
     volumes:
-      - ./.clang-format:/app/.clang-format
-      - ./Makefile:/app/Makefile
-      - ./src:/app/src
+      - ./.clang-format:/workspace/.clang-format
+      - ./Makefile:/workspace/Makefile
+      - ./src:/workspace/src
     profiles: ['lint']
 
   markdownlint:
@@ -56,7 +56,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-info} ## (1) ## info | debug
       BRUTEFORCE: ${BRUTEFORCE:-false} ## (1) ## true | false
     volumes:
-      - ./:/app
+      - ./:/workspace
     profiles: ['development']
 
   algorithm-exercises-cpp:
@@ -66,7 +66,7 @@ services:
       dockerfile: Dockerfile.${BASE_IMAGE:-alpine}
       target: production
     # volumes:
-    #   - ./:/app
+    #   - ./:/workspace
     profiles: ['production']
 
 ## REFERENCES:
