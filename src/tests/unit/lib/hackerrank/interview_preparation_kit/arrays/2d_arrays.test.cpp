@@ -27,9 +27,9 @@ TEST_CASE("hourglassSum JSON Test Cases",
     std::vector<int *> rows;
     rows.reserve(matrix.size());
 
-    for (const auto &row : matrix) {
-      rows.push_back(const_cast<int *>(row.data()));
-    }
+    std::transform(
+        matrix.begin(), matrix.end(), std::back_inserter(rows),
+        [](const auto &row) { return const_cast<int *>(row.data()); });
 
     long long result =
         hackerrank::interview_preparation_kit::arrays::hourglassSum(matrix);
