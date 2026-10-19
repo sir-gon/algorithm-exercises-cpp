@@ -6,6 +6,6 @@ using std::vector;
 
 namespace hackerrank::interview_preparation_kit::arrays {
 
-int hourglassSum(vector<vector<int>> arr);
+int hourglassSum(const vector<vector<int>> &arr);
 
 }

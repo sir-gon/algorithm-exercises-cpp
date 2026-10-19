@@ -11,7 +11,7 @@ using std::vector;
 
 namespace hackerrank::interview_preparation_kit::arrays {
 
-int hourglassSum(vector<vector<int>> arr) {
+int hourglassSum(const vector<vector<int>> &arr) {
   int max_sum = -63; // Minimum possible hourglass sum (-9 * 7)
   for (int i = 0; i <= arr.size() - 3; i++) {
     for (int j = 0; j <= arr[0].size() - 3; j++) {
