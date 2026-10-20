@@ -23,7 +23,7 @@ jobs:
 
       - name: Install tools
         run: |
-          sudo snap install cppcheck
+          sudo apt-get install -y cppcheck
 
       - name: Check Tools
         run: |
