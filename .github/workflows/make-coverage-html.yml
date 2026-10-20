@@ -44,8 +44,17 @@ jobs:
           gcovr --version
           echo "-----------"
 
-      - name: Run coverage HTML target
-        run: make coverage/html
+      - name: Build
+        run: |
+          make build
+
+      - name: Run tests (collect coverage)
+        run: |
+          make test-no-deps
+
+      - name: Make coverage HTML report
+        run: |
+          make coverage/html
 
       - name: Verify coverage HTML artifact
         shell: bash
