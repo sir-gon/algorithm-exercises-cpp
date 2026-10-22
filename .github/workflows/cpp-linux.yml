@@ -1,6 +1,8 @@
 ---
 name: C/C++ CMake/GNU Linux CI Test
 
+# yamllint disable rule:line-length
+
 on: # yamllint disable-line rule:truthy
   push:
     branches: ["main"]
@@ -8,9 +10,6 @@ on: # yamllint disable-line rule:truthy
     # The branches below must be a subset of the branches above
     branches: ["main"]
   workflow_dispatch:
-
-env:
-  VCPKG_VERSION: 2026.07.29
 
 permissions:
   contents: read
@@ -26,28 +25,39 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      VCPKG_VERSION: 2026.10.16
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Install
+      - name: Checkout vcpkg
+        uses: actions/checkout@v5
+        with:
+          repository: microsoft/vcpkg
+          ref: ${{ env.VCPKG_VERSION }}
+          path: vcpkg
+
+      - name: Install/Adjust VCPKG
         shell: bash
         run: |
-          export VCPKG_VERSION=${VCPKG_VERSION}
-          git clone \
-            --branch $VCPKG_VERSION \
-            https://github.com/microsoft/vcpkg.git  \
-            --single-branch \
-            "$HOME/vcpkg"
-          export VCPKG_ROOT="$HOME/vcpkg"
-          echo "$VCPKG_ROOT" >> $GITHUB_PATH
-          sh $VCPKG_ROOT/bootstrap-vcpkg.sh
-          echo "VCPKG_ROOT=$HOME/vcpkg" >> $GITHUB_ENV
+          export VCPKG_VERSION=${{ env.VCPKG_VERSION }}
+          export VCPKG_ROOT="$GITHUB_WORKSPACE/vcpkg"
+          sh "$VCPKG_ROOT/bootstrap-vcpkg.sh"
+          echo "$VCPKG_ROOT" >> "$GITHUB_PATH"
+          echo "VCPKG_ROOT=$VCPKG_ROOT" >> "$GITHUB_ENV"
 
       - name: Check Tools
         run: |
+          export PATH="$VCPKG_ROOT:$PATH"
           echo "-----------"
           cc --version
+          echo "-----------"
+          gcc --version
+          echo "-----------"
+          g++ --version
           echo "-----------"
           make --version
           echo "-----------"
@@ -58,6 +68,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          export PATH="$VCPKG_ROOT:$PATH"
           make dependencies
 
       - name: Build

@@ -17,14 +17,29 @@ jobs:
     name: C/C++ CMake CI Coverage
     runs-on: ubuntu-26.04
 
+    env:
+      VCPKG_VERSION: 2026.10.16
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      - name: Checkout vcpkg
+        uses: actions/checkout@v5
+        with:
+          repository: microsoft/vcpkg
+          ref: ${{ env.VCPKG_VERSION }}
+          path: vcpkg
+
       - name: Install/Adjust VCPKG
         shell: bash
         run: |
-          echo "VCPKG_ROOT=/usr/local/share/vcpkg" >> $GITHUB_ENV
+          export VCPKG_VERSION=${{ env.VCPKG_VERSION }}
+          export VCPKG_ROOT="$GITHUB_WORKSPACE/vcpkg"
+          sh "$VCPKG_ROOT/bootstrap-vcpkg.sh"
+          echo "$VCPKG_ROOT" >> "$GITHUB_PATH"
+          echo "VCPKG_ROOT=$VCPKG_ROOT" >> "$GITHUB_ENV"
 
       - name: Install Tools
         run: |
@@ -32,10 +47,9 @@ jobs:
 
       - name: Check Tools
         run: |
+          export PATH="$VCPKG_ROOT:$PATH"
           echo "-----------"
           gcc --version
-          echo "-----------"
-          g++ --version
           echo "-----------"
           make --version
           echo "-----------"
@@ -43,12 +57,12 @@ jobs:
           echo "-----------"
           vcpkg --version
           echo "-----------"
-          gcov --version
-          echo "-----------"
           gcovr --version
 
       - name: Install dependencies
-        run: make dependencies
+        run: |
+          export PATH="$VCPKG_ROOT:$PATH"
+          make dependencies
 
       - name: Build
         run: make build

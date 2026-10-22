@@ -20,11 +20,31 @@ jobs:
     env:
       # Directory where build-wrapper output will be placed
       BUILD_WRAPPER_OUT_DIR: build
+      VCPKG_VERSION: 2026.10.16
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # Shallow clones should be disabled for a better relevancy of analysis
           fetch-depth: 0
+
+      - name: Checkout vcpkg
+        uses: actions/checkout@v5
+        with:
+          repository: microsoft/vcpkg
+          ref: ${{ env.VCPKG_VERSION }}
+          path: vcpkg
+
+      - name: Install/Adjust VCPKG
+        shell: bash
+        run: |
+          export VCPKG_VERSION=${{ env.VCPKG_VERSION }}
+          export VCPKG_ROOT="$GITHUB_WORKSPACE/vcpkg"
+          sh "$VCPKG_ROOT/bootstrap-vcpkg.sh"
+          echo "$VCPKG_ROOT" >> "$GITHUB_PATH"
+          echo "VCPKG_ROOT=$VCPKG_ROOT" >> "$GITHUB_ENV"
+
       - name: Install Tools
         run: |
           pip install --only-binary :all: gcovr==8.6
@@ -50,6 +70,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          export PATH="$VCPKG_ROOT:$PATH"
           make dependencies
 
       - name: Install Build Wrapper
@@ -57,7 +78,7 @@ jobs:
 
       - name: Run build-wrapper
         run: |
-          export VCPKG_ROOT=/usr/local/share/vcpkg
+          export PATH="$VCPKG_ROOT:$PATH"
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make build
 
       - name: Make coverage report
