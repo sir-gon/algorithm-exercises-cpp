@@ -43,6 +43,11 @@ jobs:
     #   - https://gh.io/using-larger-runners (GitHub.com only)
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+
+    env:
+      VCPKG_VERSION: 2026.10.16
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
     permissions:
       # required for all workflows
       security-events: write
@@ -74,8 +79,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      - name: Checkout vcpkg
+        uses: actions/checkout@v7
+        with:
+          repository: microsoft/vcpkg
+          ref: ${{ env.VCPKG_VERSION }}
+          path: vcpkg
+
+      - name: Install/Adjust VCPKG
+        shell: bash
+        run: |
+          export VCPKG_VERSION=${{ env.VCPKG_VERSION }}
+          export VCPKG_ROOT="$GITHUB_WORKSPACE/vcpkg"
+          sh "$VCPKG_ROOT/bootstrap-vcpkg.sh"
+          echo "$VCPKG_ROOT" >> "$GITHUB_PATH"
+          echo "VCPKG_ROOT=$VCPKG_ROOT" >> "$GITHUB_ENV"
+
       - name: Check Tools
         run: |
+          export PATH="$VCPKG_ROOT:$PATH"
           echo "-----------"
           cc --version
           echo "-----------"
@@ -88,6 +110,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          export PATH="$VCPKG_ROOT:$PATH"
           make dependencies
 
       # Add any setup steps before running the `github/codeql-action/init` action.
@@ -119,7 +142,6 @@ jobs:
         if: matrix.build-mode == 'manual'
         shell: bash
         run: |
-          export VCPKG_ROOT=/usr/local/share/vcpkg
           make build
 
       - name: Perform CodeQL Analysis

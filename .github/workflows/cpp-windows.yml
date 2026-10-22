@@ -1,6 +1,8 @@
 ---
 name: C/C++ CMake/MSVC Windows CI Test
 
+# yamllint disable rule:line-length
+
 on: # yamllint disable-line rule:truthy
   push:
     branches: ["main"]
@@ -21,64 +23,92 @@ jobs:
           - "windows-11-arm"
           - "windows-2025"
 
+    env:
+      VCPKG_VERSION: 2026.10.16
+      VCPKG_ROOT: ${{ github.workspace }}\vcpkg
+
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Install
-        shell: bash
+      - name: Checkout vcpkg
+        uses: actions/checkout@v5
+        with:
+          repository: microsoft/vcpkg
+          ref: ${{ env.VCPKG_VERSION }}
+          path: vcpkg
+
+      - name: Bootstrap vcpkg
+        shell: pwsh
         run: |
-          echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
+          & "${{ env.VCPKG_ROOT }}\bootstrap-vcpkg.bat" -disableMetrics
+
+      - name: Configure custom vcpkg environment
+        shell: pwsh
+        run: |
+          $env:VCPKG_ROOT = "${{ env.VCPKG_ROOT }}"
+          $env:Path = "${{ env.VCPKG_ROOT }};$env:Path"
+          "VCPKG_ROOT=$custom" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "$custom" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
 
       - name: Check MSVC
-        shell: cmd
+        shell: pwsh
         run: |
-          where cl
+          Get-Command cl, link, ml64 | Format-Table Name, Source -AutoSize
           cl
-          where link
-          where ml64
+          where.exe link
+          where.exe ml64
 
       - name: Check Tools
+        shell: pwsh
         run: |
-          echo "-----------"
-          c++ --version
-          echo "-----------"
+          $env:Path = "${{ env.VCPKG_ROOT }};$env:Path"
+          Write-Host "-----------"
+          cc --version
+          Write-Host "-----------"
           make --version
-          echo "-----------"
+          Write-Host "-----------"
           cmake --version
-          echo "-----------"
+          Write-Host "-----------"
           vcpkg --version
-          echo "-----------"
+          Write-Host "-----------"
 
       - name: Install dependencies
+        shell: pwsh
         run: |
+          $env:Path = "${{ env.VCPKG_ROOT }};$env:Path"
           vcpkg --x-wait-for-lock integrate install
           vcpkg --x-wait-for-lock install
 
       - name: Pre Build
-        run: >
-          cmake.exe
-          -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
-          -DCMAKE_BUILD_TYPE=Debug
-          -DCMAKE_C_COMPILER=cl
-          -DCMAKE_CXX_COMPILER=cl
-          -S${{ github.workspace }}
-          -B${{ github.workspace }}/build/default -G "MinGW Makefiles"
+        shell: pwsh
+        run: |
+          $env:Path = "${{ env.VCPKG_ROOT }};$env:Path"
+          cmake.exe `
+            -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}\scripts\buildsystems\vcpkg.cmake" `
+            -DCMAKE_BUILD_TYPE=Debug `
+            -DCMAKE_C_COMPILER=cl `
+            -DCMAKE_CXX_COMPILER=cl `
+            -S "$env:GITHUB_WORKSPACE" `
+            -B "$env:GITHUB_WORKSPACE\build\default" `
+            -G "MinGW Makefiles"
 
       - name: Build
+        shell: pwsh
         run: |
-          cmake --build build/default
+          cmake --build "$env:GITHUB_WORKSPACE\build\default"
 
       - name: Test
-        run: >
-          ctest
-          -C Debug
-          -T test
-          --rerun-failed
-          --output-on-failure
-          --test-dir ${{ github.workspace }}/build/default
+        shell: pwsh
+        run: |
+          ctest `
+            -C Debug `
+            -T test `
+            --rerun-failed `
+            --output-on-failure `
+            --test-dir "$env:GITHUB_WORKSPACE\build\default"
