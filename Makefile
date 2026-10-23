@@ -112,8 +112,7 @@ test/static-no-deps:
 		--inconclusive \
 		--inline-suppr \
 		--error-exitcode=13 \
-		--suppress=missingIncludeSystem \
-		--suppress=unusedFunction
+		--suppress=missingIncludeSystem
 
 test/static: prebuild test/static-no-deps
 
