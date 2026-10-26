@@ -21,7 +21,7 @@ RUN apk --update add --no-cache \
   && update-ca-certificates \
   && apk --update add --no-cache \
   ## add ephemeral packages
-  "curl=8.22.0-r0" \
+  "curl=8.23.0-r0" \
   "tar=1.35-r5" \
   # CMAKE from Kitware repository
   && curl -fsSLH "Cache-Control: no-cache" --proto "=https" https://github.com/Kitware/CMake/releases/download/v4.4.0/cmake-4.4.0-linux-x86_64.tar.gz \
@@ -51,7 +51,7 @@ ENV VCPKG_ROOT=/opt/vcpkg
 
 # vcpkg Package Manager
 RUN apk --update add --no-cache \
-  "curl=8.22.0-r0" \
+  "curl=8.23.0-r0" \
   "git=2.54.0-r0" \
   "patchelf=0.18.0-r3" \
   "samurai=1.2-r8" \
