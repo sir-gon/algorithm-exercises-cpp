@@ -1,4 +1,4 @@
-FROM debian:stable-20261005-slim AS init
+FROM debian:stable-20261020-slim AS init
 
 ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
@@ -139,7 +139,7 @@ COPY --from=builder ${WORKDIR} ${WORKDIR}
 
 CMD ["make", "test-no-deps"]
 
-FROM debian:stable-20261005-slim AS production
+FROM debian:stable-20261020-slim AS production
 
 ENV LOG_LEVEL=INFO
 ENV BRUTEFORCE=false
