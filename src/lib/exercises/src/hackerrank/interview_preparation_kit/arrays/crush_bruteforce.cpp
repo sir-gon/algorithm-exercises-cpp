@@ -14,17 +14,17 @@ long arrayManipulation(int n, vector<vector<int>> queries) {
   // why adding 2?
   //   first slot to adjust 1-based index and
   //   last slot for storing accum_sum result
-  vector<long> result((size_t)(n + 1), 0L);
+  vector result((size_t)(n + 1), 0L);
   long maximum = 0;
 
   for (int i = 0; i <= n; i++) {
     result[i] = 0;
   }
 
-  for (int j = 0; j < queries.size(); j++) {
-    int a = queries[j][0];
-    int b = queries[j][1];
-    int k = queries[j][2];
+  for (const auto &query : queries) {
+    int a = query[0];
+    int b = query[1];
+    int k = query[2];
 
     for (int l = a; l <= b; l++) {
       result[l] += k;
@@ -32,7 +32,7 @@ long arrayManipulation(int n, vector<vector<int>> queries) {
   }
 
   for (int i = 1; i < n + 1; i++) {
-    int value = result[i];
+    long value = result[i];
     maximum = exercise_max_long(maximum, value);
   }
 
