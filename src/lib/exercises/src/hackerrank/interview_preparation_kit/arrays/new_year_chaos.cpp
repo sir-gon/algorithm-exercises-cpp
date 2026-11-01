@@ -4,15 +4,15 @@
 
 #include <exercises/hackerrank/interview_preparation_kit/arrays/new_year_chaos.hpp>
 #include <iostream>
+#include <string>
 
 /**
  * @link Problem definition
  * [[docs/hackerrank/interview_preparation_kit/arrays/new_year_chaos.md]]
  */
 
-#define MAX_SIZE 12
-const char *MESSAGE = "Too chaotic\0";
-const int NEW_YEAR_CHAOS_TOLERANCE = 2;
+constexpr int NEW_YEAR_CHAOS_TOLERANCE = 2;
+constexpr const char *MESSAGE = "Too chaotic";
 
 static inline long exercise_max_long(long a, long b) { return a > b ? a : b; }
 
@@ -33,7 +33,7 @@ static int minimumBribesCompute(vector<int> q, bool *ok) {
       return bribes;
     }
 
-    for (size_t k = (size_t)exercise_min_long(
+    for (auto k = (size_t)exercise_min_long(
              exercise_max_long(value - NEW_YEAR_CHAOS_TOLERANCE, 0), (long)i);
          k < i; ++k) {
       if (q[k] > value) {
@@ -52,12 +52,10 @@ std::string minimumBribesText(vector<int> q) {
   int bribes = minimumBribesCompute(q, &ok);
 
   if (ok) {
-    static char result[MAX_SIZE];
-    snprintf(result, MAX_SIZE, "%d", bribes);
-    return result;
-  } else {
-    return MESSAGE;
+    return std::to_string(bribes);
   }
+
+  return MESSAGE;
 }
 
 // cppcheck-suppress passedByValue
