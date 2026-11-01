@@ -14,17 +14,17 @@ long arrayManipulationOptimized(int n, vector<vector<int>> queries) {
   // why adding 2?
   //   first slot to adjust 1-based index and
   //   last slot for storing accum_sum result
-  vector<long> result((size_t)(n + 2), 0L);
+  vector result((size_t)(n + 2), 0L);
   long maximum = 0;
 
   for (int i = 0; i < n + 2; i++) {
     result[i] = 0;
   }
 
-  for (int j = 0; j < queries.size(); j++) {
-    int a_start = queries[j][0];
-    int b_end = queries[j][1];
-    int k_value = queries[j][2];
+  for (const auto &query : queries) {
+    int a_start = query[0];
+    int b_end = query[1];
+    int k_value = query[2];
 
     result[a_start] += k_value;
     result[b_end + 1] -= k_value;
