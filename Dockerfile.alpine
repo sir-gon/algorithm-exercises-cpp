@@ -16,7 +16,7 @@ COPY ./Makefile ${WORKDIR}/
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 RUN apk --update add --no-cache \
   "ca-certificates=20261020-r0" \
-  "tzdata=2026e-r0" \
+  "tzdata=2026f-r0" \
   "gcompat=1.1.0-r4" \
   && update-ca-certificates \
   && apk --update add --no-cache \
