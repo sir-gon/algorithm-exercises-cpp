@@ -74,7 +74,7 @@ jobs:
           make dependencies
 
       - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@e805d875275f728fac1885b413934be6d7c63f65
 
       - name: Run build-wrapper
         run: |
