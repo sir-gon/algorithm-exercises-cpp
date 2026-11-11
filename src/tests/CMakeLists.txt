@@ -23,15 +23,18 @@ target_link_libraries(unit-tests_combined PRIVATE exercises)
 
 target_link_libraries(test_tools PUBLIC nlohmann_json::nlohmann_json)
 
-# Rule of thumb:
-# any static helper library that contributes symbols used by the final executable
-# must be linked into that final executable, not just into a previous static step.
-# On GNU ld, __wrap_malloc requires the final executable to receive both the
-# wrapper flag and the helper library object; on Apple, the equivalent is
-# force-loading the static library into the final link.
-target_link_libraries(unit-tests_combined PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,test_tools>")
-
-if(UNIX AND NOT APPLE)
+# Rule of thumb for GNU ld:
+# if you provide a __wrap_malloc() implementation, the --wrap=malloc flag and the
+# static helper library must both belong to the final executable link, otherwise
+# the wrapper object may be discarded before the final link step.
+# macOS uses dyld interposition instead; MSVC/Windows does not support GNU ld
+# wrapping, so the fault-injection helper must be excluded there.
+if(MSVC)
+  target_link_libraries(unit-tests_combined PRIVATE test_tools)
+elseif(APPLE)
+  target_link_libraries(unit-tests_combined PRIVATE -Wl,-force_load,$<TARGET_FILE:test_tools>)
+else()
+  target_link_libraries(unit-tests_combined PRIVATE -Wl,--whole-archive test_tools -Wl,--no-whole-archive)
   target_link_options(unit-tests_combined PRIVATE "-Wl,--wrap=malloc")
 endif()
 

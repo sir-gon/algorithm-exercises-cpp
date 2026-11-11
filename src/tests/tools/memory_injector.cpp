@@ -1,5 +1,3 @@
-// cppcheck-suppress unusedFunction
-
 #include "memory_injector.hpp"
 #include <cstdlib>
 
@@ -66,7 +64,7 @@ static void *my_malloc(size_t size) {
 
 DYLD_INTERPOSE(my_malloc, malloc);
 
-#else
+#elif defined(__GNUC__) && !defined(_WIN32)
 // Linux / GNU ld: use the --wrap=malloc linker flag.
 // The linker renames every call to `malloc` → `__wrap_malloc` and makes the
 // original symbol available as `__real_malloc`.
@@ -89,5 +87,22 @@ extern "C" void *__wrap_malloc(size_t size) {
 
   // If it shouldn't fail, call the real system malloc
   return __real_malloc(size);
+}
+#else
+// Windows / MSVC: GNU ld `--wrap=malloc` is not supported, so this component
+// must behave as a normal malloc shim without trying to interpose the symbol.
+extern "C" void *__wrap_malloc(size_t size) {
+  if (force_immediate_error) {
+    return nullptr;
+  }
+
+  if (target_fault_allocation != -1) {
+    allocation_counter++; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
+    if (allocation_counter == target_fault_allocation) {
+      return nullptr;
+    }
+  }
+
+  return ::malloc(size);
 }
 #endif
