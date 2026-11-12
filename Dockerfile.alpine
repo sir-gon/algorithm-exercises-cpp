@@ -135,7 +135,7 @@ ENV BRUTEFORCE=false
 ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
 
-COPY --from=builder ${WORKDIR}/build/src/lib/exercises/*.a ${WORKDIR}/
+COPY --from=builder ${WORKDIR}/build/src/lib/*.a ${WORKDIR}/
 
 RUN addgroup -S -g 1001 app \
   && adduser -S -u 1001 -G app -h /home/workspace app

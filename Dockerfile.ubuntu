@@ -157,7 +157,7 @@ RUN apt-get update \
   "make=4.4.1-3" \
   && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder ${WORKDIR}/build/src/lib/exercises/*.a ${WORKDIR}/
+COPY --from=builder ${WORKDIR}/build/src/lib/*.a ${WORKDIR}/
 
 RUN useradd --uid 1001 --user-group --system --create-home --no-log-init app
 USER 1001
