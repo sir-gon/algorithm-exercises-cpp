@@ -6,7 +6,7 @@ find_path(CATCH_INCLUDE_DIR NAMES catch.hpp PATH_SUFFIXES catch2)
 file(GLOB_RECURSE TOOLS_SOURCES "tools/*.cpp")
 add_library(test_tools STATIC ${TOOLS_SOURCES})
 
-file(GLOB_RECURSE SOURCES "unit/lib/*.cpp")
+file(GLOB_RECURSE SOURCES "exercises/*.cpp")
 add_executable(unit-tests_combined ${SOURCES})
 
 set_property(TARGET unit-tests_combined PROPERTY CXX_STANDARD 17)

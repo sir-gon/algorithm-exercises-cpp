@@ -210,7 +210,7 @@ compose/run: compose/build
 compose/all: compose/rebuild compose/test compose/lint
 
 all:
-	$(call crono, make clean; make dependencies; make build; make test; make lint; make coverage/html)
+	$(call crono, make clean && make dependencies && make build && make test && make lint && make coverage/html)
 
 run:
 	ls -alh

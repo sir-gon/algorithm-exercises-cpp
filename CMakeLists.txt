@@ -57,7 +57,7 @@ if (CMAKE_GENERATOR MATCHES "Unix Makefiles")
 
 endif ()
 
-add_subdirectory(src/lib/exercises)
+add_subdirectory(src/lib)
 
 if(BUILD_TESTING)
   add_subdirectory(src/tests)
