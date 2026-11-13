@@ -11,8 +11,6 @@
 #include <fstream>
 #include <vector>
 
-#include "tools/memory_allocator.hpp"
-
 using json = nlohmann::json;
 
 TEST_CASE("checkMagazine JSON Test Cases",
@@ -57,6 +55,16 @@ TEST_CASE("checkMagazine unhappy path cases",
     CHECK(result == __RANSOM_NOTE_YES__);
   }
 
+  SECTION("arrayManipulation: empty note is always valid") {
+    std::vector<std::string> magazine = {"one", "two", "three"};
+    std::vector<std::string> note = {};
+
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
+
+    CHECK(result == __RANSOM_NOTE_YES__);
+  }
+
   SECTION(
       "arrayManipulation: note contains a word not present in the magazine") {
     std::vector<std::string> magazine = {"hello", "world"};
@@ -78,26 +86,24 @@ TEST_CASE("checkMagazine unhappy path cases",
     CHECK(result == __RANSOM_NOTE_NO__);
   }
 
-  SECTION("arrayManipulation: allocator failure path") {
-    using namespace hackerrank::interview_preparation_kit::
-        dictionaries_and_hashmaps;
-
-    std::vector<std::string> magazine = {"hello", "world"};
-    std::vector<std::string> note = {"out", "of", "world"};
-
-    const auto previous_allocator = tools::getMemoryAllocator();
-    tools::setMemoryAllocator([](size_t) -> void * { return nullptr; });
+  SECTION("arrayManipulation: repeated word exhausts available count") {
+    std::vector<std::string> magazine = {"a"};
+    std::vector<std::string> note = {"a", "a"};
 
     std::string result = hackerrank::interview_preparation_kit::
         dictionaries_and_hashmaps::checkMagazineText(magazine, note);
 
-    if (previous_allocator != nullptr) {
-      tools::setMemoryAllocator(previous_allocator);
-    } else {
-      tools::resetMemoryAllocator();
-    }
-
     CHECK(result == __RANSOM_NOTE_NO__);
+  }
+
+  SECTION("arrayManipulation: exact counts are allowed") {
+    std::vector<std::string> magazine = {"a", "b", "a", "c"};
+    std::vector<std::string> note = {"a", "b", "c"};
+
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
+
+    CHECK(result == __RANSOM_NOTE_YES__);
   }
 
   SECTION("arrayManipulation: non-ascii leading byte is safe") {

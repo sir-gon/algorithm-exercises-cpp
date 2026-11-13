@@ -1,5 +1,6 @@
 #include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/ctci_ransom_note.hpp>
 #include <iostream>
+#include <unordered_map>
 
 /**
  * @link Problem definition
@@ -8,81 +9,22 @@
 
 namespace hackerrank::interview_preparation_kit::dictionaries_and_hashmaps {
 
-const unsigned int __HASH_BUCKETS__ = 256;
-const unsigned int __WORD_COUNT_START__ = 1;
-
-typedef struct WordCount {
-  string word;
-  int count = 0;
-  struct WordCount *next = nullptr;
-} WordCount;
-
-static int hash_function(const string &word) {
-  if (word.empty()) {
-    return 0;
-  }
-
-  // Normalize the first byte to the unsigned range [0,255]. Using a signed char
-  // directly makes the bucket index negative for UTF-8 bytes above 127 and is
-  // undefined behavior on some platforms (Linux/Windows/ASan can then crash).
-  return static_cast<int>(static_cast<unsigned char>(word[0])) %
-         __HASH_BUCKETS__;
-}
-
-static WordCount *find_word_count(WordCount *bucket, const string &word) {
-  while (bucket != nullptr) {
-    if (bucket->word == word) {
-      return bucket;
-    }
-    bucket = bucket->next;
-  }
-
-  return nullptr;
-}
-
-static void free_word_count_buckets(const std::vector<WordCount *> &buckets) {
-  for (int i = 0; i < __HASH_BUCKETS__; ++i) {
-    WordCount *current = buckets[i];
-    while (current != nullptr) {
-      WordCount *next = current->next;
-      delete current;
-      current = next;
-    }
-  }
-}
-
 static bool checkMagazineCompute(const vector<string> &magazine,
                                  const vector<string> &note) {
-  // build dictionary from magazine
-  std::vector<WordCount *> buckets(__HASH_BUCKETS__, nullptr);
+  std::unordered_map<string, int> word_counts;
 
-  for (int i = 0; i < magazine.size(); i++) {
-    const string word = magazine[i];
-    int hash = hash_function(word);
-    WordCount *current = find_word_count(buckets[hash], word);
-
-    if (current != nullptr) {
-      current->count++;
-      continue;
-    }
-
-    buckets[hash] = new WordCount{word, __WORD_COUNT_START__, buckets[hash]};
+  for (const auto &word : magazine) {
+    ++word_counts[word];
   }
 
-  // Search words in the note and check if they exist in the magazine dictionary
-  for (int i = 0; i < note.size(); i++) {
-    const string word = note[i];
-    int hash = hash_function(word);
-    WordCount *current = find_word_count(buckets[hash], word);
-
-    if (current == nullptr || current->count <= 0) {
-      free_word_count_buckets(buckets);
+  for (const auto &word : note) {
+    auto it = word_counts.find(word);
+    if (it == word_counts.end() || it->second == 0) {
       return false;
     }
-    current->count--;
+    --it->second;
   }
 
-  free_word_count_buckets(buckets);
   return true;
 }
 
