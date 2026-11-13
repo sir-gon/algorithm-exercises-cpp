@@ -57,6 +57,27 @@ TEST_CASE("checkMagazine unhappy path cases",
     CHECK(result == __RANSOM_NOTE_YES__);
   }
 
+  SECTION(
+      "arrayManipulation: note contains a word not present in the magazine") {
+    std::vector<std::string> magazine = {"hello", "world"};
+    std::vector<std::string> note = {"hello", "missing"};
+
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
+
+    CHECK(result == __RANSOM_NOTE_NO__);
+  }
+
+  SECTION("arrayManipulation: note has many repeated words") {
+    std::vector<std::string> magazine = {"hello", "world"};
+    std::vector<std::string> note = {"hello", "world", "world", "world"};
+
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
+
+    CHECK(result == __RANSOM_NOTE_NO__);
+  }
+
   SECTION("arrayManipulation: allocator failure path") {
     using namespace hackerrank::interview_preparation_kit::
         dictionaries_and_hashmaps;
@@ -67,7 +88,8 @@ TEST_CASE("checkMagazine unhappy path cases",
     const auto previous_allocator = tools::getMemoryAllocator();
     tools::setMemoryAllocator([](size_t) -> void * { return nullptr; });
 
-    std::string result = checkMagazineText(magazine, note);
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
 
     if (previous_allocator != nullptr) {
       tools::setMemoryAllocator(previous_allocator);

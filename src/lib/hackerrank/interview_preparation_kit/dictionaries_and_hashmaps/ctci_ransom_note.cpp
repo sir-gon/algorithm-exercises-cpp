@@ -1,5 +1,6 @@
 #include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/ctci_ransom_note.hpp>
 #include <iostream>
+#include <new>
 
 /**
  * @link Problem definition
@@ -9,6 +10,7 @@
 namespace hackerrank::interview_preparation_kit::dictionaries_and_hashmaps {
 
 const unsigned int __HASH_BUCKETS__ = 256;
+const unsigned int __WORD_COUNT_START__ = 1;
 
 typedef struct WordCount {
   string word;
@@ -29,21 +31,22 @@ static int hash_function(const string &word) {
 }
 
 static WordCount *find_word_count(WordCount *bucket, const string &word) {
-  while (bucket != NULL) {
+  while (bucket != nullptr) {
     if (bucket->word == word) {
       return bucket;
     }
     bucket = bucket->next;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 static void free_word_count_buckets(WordCount *buckets[__HASH_BUCKETS__]) {
   for (int i = 0; i < __HASH_BUCKETS__; ++i) {
     WordCount *current = buckets[i];
-    while (current != NULL) {
+    while (current != nullptr) {
       WordCount *next = current->next;
+      current->~WordCount();
       free(current);
       current = next;
     }
@@ -52,32 +55,28 @@ static void free_word_count_buckets(WordCount *buckets[__HASH_BUCKETS__]) {
 
 static bool checkMagazineCompute(const vector<string> &magazine,
                                  const vector<string> &note) {
-  bool result = true;
-
   // build dictionary from magazine
-  WordCount *buckets[__HASH_BUCKETS__] = {NULL};
+  WordCount *buckets[__HASH_BUCKETS__] = {nullptr};
 
   for (int i = 0; i < magazine.size(); i++) {
     const string word = magazine[i];
     int hash = hash_function(word);
     WordCount *current = find_word_count(buckets[hash], word);
 
-    if (current != NULL) {
+    if (current != nullptr) {
       current->count++;
       continue;
     }
 
-    WordCount *new_word_count = static_cast<WordCount *>(
-        tools::getMemoryAllocator()(sizeof(WordCount)));
-    if (new_word_count == NULL) {
+    void *memory = tools::getMemoryAllocator()(sizeof(WordCount));
+    if (memory == nullptr) {
       // Handle memory allocation failure
       free_word_count_buckets(buckets);
       return false;
     }
-    new_word_count->word = word;
-    new_word_count->count = 1;
-    new_word_count->next = buckets[hash];
-    buckets[hash] = new_word_count;
+
+    buckets[hash] =
+        new (memory) WordCount{word, __WORD_COUNT_START__, buckets[hash]};
   }
 
   // Search words in the note and check if they exist in the magazine dictionary
@@ -86,15 +85,15 @@ static bool checkMagazineCompute(const vector<string> &magazine,
     int hash = hash_function(word);
     WordCount *current = find_word_count(buckets[hash], word);
 
-    if (current == NULL || current->count <= 0) {
-      result = false;
-      break;
+    if (current == nullptr || current->count <= 0) {
+      free_word_count_buckets(buckets);
+      return false;
     }
     current->count--;
   }
 
   free_word_count_buckets(buckets);
-  return result;
+  return true;
 }
 
 const string checkMagazineText(const vector<string> &magazine,
@@ -106,7 +105,6 @@ const string checkMagazineText(const vector<string> &magazine,
   }
 }
 
-// cppcheck-suppress[passedByValue]
 void checkMagazine(vector<string> magazine, vector<string> note) {
   std::cout << checkMagazineText(magazine, note) << std::endl;
 }
