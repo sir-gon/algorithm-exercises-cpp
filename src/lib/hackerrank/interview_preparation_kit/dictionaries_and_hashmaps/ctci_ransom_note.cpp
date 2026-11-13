@@ -1,6 +1,5 @@
 #include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/ctci_ransom_note.hpp>
 #include <iostream>
-#include <new>
 
 /**
  * @link Problem definition
@@ -41,13 +40,12 @@ static WordCount *find_word_count(WordCount *bucket, const string &word) {
   return nullptr;
 }
 
-static void free_word_count_buckets(WordCount *buckets[__HASH_BUCKETS__]) {
+static void free_word_count_buckets(const std::vector<WordCount *> &buckets) {
   for (int i = 0; i < __HASH_BUCKETS__; ++i) {
     WordCount *current = buckets[i];
     while (current != nullptr) {
       WordCount *next = current->next;
-      current->~WordCount();
-      free(current);
+      delete current;
       current = next;
     }
   }
@@ -56,7 +54,7 @@ static void free_word_count_buckets(WordCount *buckets[__HASH_BUCKETS__]) {
 static bool checkMagazineCompute(const vector<string> &magazine,
                                  const vector<string> &note) {
   // build dictionary from magazine
-  WordCount *buckets[__HASH_BUCKETS__] = {nullptr};
+  std::vector<WordCount *> buckets(__HASH_BUCKETS__, nullptr);
 
   for (int i = 0; i < magazine.size(); i++) {
     const string word = magazine[i];
@@ -68,15 +66,7 @@ static bool checkMagazineCompute(const vector<string> &magazine,
       continue;
     }
 
-    void *memory = tools::getMemoryAllocator()(sizeof(WordCount));
-    if (memory == nullptr) {
-      // Handle memory allocation failure
-      free_word_count_buckets(buckets);
-      return false;
-    }
-
-    buckets[hash] =
-        new (memory) WordCount{word, __WORD_COUNT_START__, buckets[hash]};
+    buckets[hash] = new WordCount{word, __WORD_COUNT_START__, buckets[hash]};
   }
 
   // Search words in the note and check if they exist in the magazine dictionary
