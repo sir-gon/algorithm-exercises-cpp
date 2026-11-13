@@ -28,8 +28,8 @@ static bool checkMagazineCompute(const vector<string> &magazine,
   return true;
 }
 
-const string checkMagazineText(const vector<string> &magazine,
-                               const vector<string> &note) {
+string checkMagazineText(const vector<string> &magazine,
+                         const vector<string> &note) {
   if (!checkMagazineCompute(magazine, note)) {
     return __RANSOM_NOTE_NO__;
   } else {

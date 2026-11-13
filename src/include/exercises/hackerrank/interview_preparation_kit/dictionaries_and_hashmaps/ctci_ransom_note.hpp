@@ -12,7 +12,7 @@ const std::string __RANSOM_NOTE_NO__ = "No";
 namespace hackerrank::interview_preparation_kit::dictionaries_and_hashmaps {
 
 void checkMagazine(vector<string> magazine, vector<string> note);
-const std::string checkMagazineText(const vector<string> &magazine,
-                                    const vector<string> &note);
+std::string checkMagazineText(const vector<string> &magazine,
+                              const vector<string> &note);
 
 } // namespace hackerrank::interview_preparation_kit::dictionaries_and_hashmaps
