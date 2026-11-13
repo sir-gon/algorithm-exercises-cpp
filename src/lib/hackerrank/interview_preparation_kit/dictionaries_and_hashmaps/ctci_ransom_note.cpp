@@ -19,7 +19,10 @@ static bool checkMagazineCompute(const vector<string> &magazine,
 
   for (const auto &word : note) {
     auto it = word_counts.find(word);
-    if (it == word_counts.end() || it->second == 0) {
+    if (it == word_counts.end()) {
+      return false;
+    }
+    if (it->second == 0) {
       return false;
     }
     --it->second;

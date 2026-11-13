@@ -43,6 +43,39 @@ TEST_CASE("checkMagazine JSON Test Cases",
   }
 }
 
+TEST_CASE("checkMagazine branch matrix",
+          "[hackerrank] [dictionaries_and_hashmaps] [branch]") {
+  SECTION("guard evaluates true when word is missing") {
+    std::vector<std::string> magazine = {"hello", "world"};
+    std::vector<std::string> note = {"missing"};
+
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
+
+    CHECK(result == __RANSOM_NOTE_NO__);
+  }
+
+  SECTION("guard evaluates true when count is exhausted") {
+    std::vector<std::string> magazine = {"a"};
+    std::vector<std::string> note = {"a", "a"};
+
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
+
+    CHECK(result == __RANSOM_NOTE_NO__);
+  }
+
+  SECTION("guard evaluates false when word is available") {
+    std::vector<std::string> magazine = {"a", "b", "a", "c"};
+    std::vector<std::string> note = {"a", "b", "c"};
+
+    std::string result = hackerrank::interview_preparation_kit::
+        dictionaries_and_hashmaps::checkMagazineText(magazine, note);
+
+    CHECK(result == __RANSOM_NOTE_YES__);
+  }
+}
+
 TEST_CASE("checkMagazine unhappy path cases",
           "[hackerrank] [dictionaries_and_hashmaps] [unhappy]") {
   SECTION("arrayManipulation: magazine has empty word") {
