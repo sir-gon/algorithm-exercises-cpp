@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Example 1",
+    "s1": "and",
+    "s2": "art",
+    "expected": "YES"
+  },
+  {
+    "title": "Example 2",
+    "s1": "be",
+    "s2": "cat",
+    "expected": "NO"
+  },
+  {
+    "title": "Sample Test Case 0",
+    "s1": "hello",
+    "s2": "world",
+    "expected": "YES"
+  }
+]
