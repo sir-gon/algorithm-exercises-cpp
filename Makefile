@@ -114,8 +114,7 @@ test/static-no-deps:
 		--error-exitcode=13 \
 		--suppress=missingIncludeSystem \
 		--suppress=unmatchedSuppression \
-		--suppress=passedByValue:*ctci_ransom_note.cpp \
-		--suppress=CastIntegerToAddressAtReturn:*memory_allocator.cpp \
+		--suppress=passedByValue \
 	&& echo '✔  Your code looks good.'
 
 test/static: prebuild test/static-no-deps
