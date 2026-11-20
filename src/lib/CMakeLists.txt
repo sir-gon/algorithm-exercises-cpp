@@ -1,4 +1,6 @@
-file (GLOB_RECURSE SOURCES "*.c" "*.cpp")
+file (GLOB_RECURSE SOURCES
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_library(exercises STATIC ${SOURCES})
 
 target_include_directories(exercises
