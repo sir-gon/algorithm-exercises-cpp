@@ -3,10 +3,10 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_path(CATCH_INCLUDE_DIR NAMES catch.hpp PATH_SUFFIXES catch2)
 
 # Create a static library for general test utilities.
-file(GLOB_RECURSE TOOLS_SOURCES "tools/*.cpp")
+file(GLOB_RECURSE TOOLS_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tools/*.cpp")
 add_library(test_tools STATIC ${TOOLS_SOURCES})
 
-file(GLOB_RECURSE SOURCES "exercises/*.cpp")
+file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_executable(unit-tests_combined ${SOURCES})
 
 set_property(TARGET unit-tests_combined PROPERTY CXX_STANDARD 17)

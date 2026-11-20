@@ -1,4 +1,4 @@
-#include <exercises/basic/limits.hpp>
+#include <basic/limits.hpp>
 
 #include <iostream>
 #include <limits>
