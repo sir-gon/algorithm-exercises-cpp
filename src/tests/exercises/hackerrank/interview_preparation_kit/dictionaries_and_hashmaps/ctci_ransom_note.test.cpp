@@ -20,8 +20,7 @@ TEST_CASE("checkMagazine JSON Test Cases",
 
   INFO("checkMagazine JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     INFO("checkMagazine JSON test case: " << testcase["title"]);

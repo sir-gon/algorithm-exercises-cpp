@@ -19,8 +19,7 @@ TEST_CASE("hourglassSum JSON Test Cases",
 
   INFO("hourglassSum JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     std::vector<std::vector<int>> matrix = testcase["input"];

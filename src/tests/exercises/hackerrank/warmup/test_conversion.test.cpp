@@ -15,8 +15,7 @@ TEST_CASE("time_conversion JSON Test Cases",
 
   INFO("time_conversion JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     std::string result = hackerrank::warmup::timeConversion(testcase["input"]);
