@@ -20,8 +20,7 @@ TEST_CASE("minimumBribes JSON Test Cases",
 
   INFO("minimumBribes JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     INFO("minimumBribes JSON test case: " << testcase["title"]);

@@ -15,8 +15,7 @@ TEST_CASE("solveMeFirst JSON Test Cases",
 
   INFO("solveMeFirst JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     int result = hackerrank::warmup::solveMeFirst(testcase["a"], testcase["b"]);

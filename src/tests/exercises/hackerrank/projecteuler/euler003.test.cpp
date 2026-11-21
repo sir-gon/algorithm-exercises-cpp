@@ -16,8 +16,7 @@ TEST_CASE("euler003 JSON Test Cases",
 
   INFO("euler003 JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     long result = hackerrank::projecteuler::euler003(testcase["n"]);

@@ -4,7 +4,7 @@
 
 /**
  * @link Problem definition
- * [[docs/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/ctci-ransom-note.md]]
+ * [[docs/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/two-strings.md]]
  */
 
 namespace hackerrank::interview_preparation_kit::dictionaries_and_hashmaps {

@@ -16,8 +16,7 @@ TEST_CASE("aVeryBigSum JSON Test Cases",
 
   INFO("aVeryBigSum JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     long long result = hackerrank::warmup::aVeryBigSum(testcase["input"]);

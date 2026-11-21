@@ -19,8 +19,7 @@ TEST_CASE("rotLeft JSON Test Cases", "[jsontestcase] [hackerrank] [arrays]") {
 
     INFO("rotLeft JSON test cases FILE: " << path.string());
 
-    std::ifstream f(path);
-    json data = json::parse(f);
+    json data = json::parse(std::ifstream(path));
 
     for (const auto &testcase : data) {
       const vector<int> result =

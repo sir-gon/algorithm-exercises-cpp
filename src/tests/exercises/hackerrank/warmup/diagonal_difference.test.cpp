@@ -16,8 +16,7 @@ TEST_CASE("diagonalDifference JSON Test Cases",
 
   INFO("diagonalDifference JSON test cases FILE: " << path.string());
 
-  std::ifstream f(path);
-  json data = json::parse(f);
+  json data = json::parse(std::ifstream(path));
 
   for (auto testcase : data) {
     long result = hackerrank::warmup::diagonalDifference(testcase["matrix"]);
