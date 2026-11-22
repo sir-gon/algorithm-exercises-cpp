@@ -1,5 +1,5 @@
 #include <algorithm>
-#include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/count_triplets.hpp>
+#include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/count_triplets_1_bruteforce.hpp>
 #include <iostream>
 #include <unordered_map>
 
@@ -10,7 +10,7 @@
 
 namespace hackerrank::interview_preparation_kit::dictionaries_and_hashmaps {
 
-long countTriplets(vector<long> arr, long r) {
+long countTripletsBruteForce(vector<long> arr, long r) {
   long counter = 0;
 
   for (auto i = arr.begin(); i != arr.end() - 2; ++i) {
