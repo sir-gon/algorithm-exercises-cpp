@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 
 // local libs
-#include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/count_triplets_optimized.hpp>
+#include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/count_triplets_1_optimized.hpp>
 
 // std libs
 #include <algorithm>
@@ -29,12 +29,15 @@ TEST_CASE("countTriplets (Optimized) JSON Test Cases",
           testcase["input"].get<std::vector<long>>();
       long r = testcase["r"].get<long>();
       long result = hackerrank::interview_preparation_kit::
-          dictionaries_and_hashmaps::countTripletsOptimized(input_array, r);
+          dictionaries_and_hashmaps::countTriplets(input_array, r);
 
       CHECK(result == expected);
     }
   }
+}
 
+TEST_CASE("countTriplets (Optimized) JSON Test Cases Big cases",
+          "[hackerrank] [jsontestcase] [dictionaries_and_hashmaps]") {
   SECTION("countTriplets JSON Big cases:") {
     std::filesystem::path path = std::filesystem::path(__FILE__).parent_path() /
                                  "count_triplets_1.big.testcases.json";
@@ -49,7 +52,7 @@ TEST_CASE("countTriplets (Optimized) JSON Test Cases",
           testcase["input"].get<std::vector<long>>();
       long r = testcase["r"].get<long>();
       long result = hackerrank::interview_preparation_kit::
-          dictionaries_and_hashmaps::countTripletsOptimized(input_array, r);
+          dictionaries_and_hashmaps::countTriplets(input_array, r);
 
       CHECK(result == expected);
     }

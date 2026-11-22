@@ -1,4 +1,4 @@
-#include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/count_triplets.hpp>
+#include <exercises/hackerrank/interview_preparation_kit/dictionaries_and_hashmaps/count_triplets_1_optimized.hpp>
 #include <iostream>
 #include <unordered_map>
 
@@ -9,7 +9,7 @@
 
 namespace hackerrank::interview_preparation_kit::dictionaries_and_hashmaps {
 
-long countTripletsOptimized(vector<long> arr, long r) {
+long countTriplets(vector<long> arr, long r) {
   std::unordered_map<long, long> potential_twos;
   std::unordered_map<long, long> potential_threes;
   long counter = 0;
